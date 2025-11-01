@@ -23,6 +23,8 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/app/libs/axios";
+import { Dialog, DialogTrigger } from "./ui/dialog";
+import ApplicantDataModal from "./ApplicantDataModal";
 
 interface Ijobs {
   job: any;
@@ -91,33 +93,41 @@ export default function ApplicantsCard({ job, index }: Ijobs) {
           </CollapsibleTrigger>
         </div>
 
-        {jobs[0]?.Resume[0] && (
+        {job?.Resume[0] && (
           <div className="px-6 py-4 border-t border-gray-100">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4 flex-1">
                 <Avatar className="h-8 w-8 rounded-full">
                   <AvatarImage
-                    src={jobs[0]?.Resume[0]?.user?.profileImage}
-                    alt={jobs[0].Resume[0]?.user?.username}
+                    src={job?.Resume[0]?.user?.profileImage}
+                    alt={job.Resume[0]?.user?.username}
                   />
                   <AvatarFallback className="rounded-full">CN</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-gray-900 text-base">
-                    {jobs[0].Resume[0]?.user?.username}
+                    {job.Resume[0]?.user?.username}
                   </h3>
                   <div className="flex items-center gap-1.5 mt-1">
                     <Mail className="w-3.5 h-3.5 text-gray-400" />
                     <p className="text-sm text-gray-600 truncate xl:w-70 w-30">
-                      {jobs[0].Resume[0]?.user?.email}
+                      {job.Resume[0]?.user?.email}
                     </p>
                   </div>
                 </div>
               </div>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700 gap-2">
-                <FileText className="w-4 h-4" />
-                View Resume
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    size="sm"
+                    className="bg-blue-600 hover:bg-blue-700 gap-2"
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span className="lg:block md:block hidden">View</span>
+                  </Button>
+                </DialogTrigger>
+                <ApplicantDataModal match={job.Resume[0]} job={job} />
+              </Dialog>
             </div>
           </div>
         )}
@@ -151,13 +161,18 @@ export default function ApplicantsCard({ job, index }: Ijobs) {
                     </div>
                   </div>
                 </div>
-                <Button
-                  size="sm"
-                  className="bg-blue-600 hover:bg-blue-700 gap-2"
-                >
-                  <FileText className="w-4 h-4" />
-                  View Resume
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      size="sm"
+                      className="bg-blue-600 hover:bg-blue-700 gap-2"
+                    >
+                      <FileText className="w-4 h-4" />
+                      <span className="lg:block md:block hidden">View</span>
+                    </Button>
+                  </DialogTrigger>
+                  <ApplicantDataModal match={applicant} job={job} />
+                </Dialog>
               </div>
             </div>
           </div>

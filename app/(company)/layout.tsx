@@ -4,13 +4,15 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import React, { useContext, useEffect } from "react";
 import { UserContext } from "../context/userContext";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function CompanyRootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { data: session, status } = useSession();
   const { user } = useContext(UserContext) as any;
   const router = useRouter();
 
@@ -20,6 +22,12 @@ export default function CompanyRootLayout({
       router.push("/");
     }
   }, [user, router]);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      redirect("/login");
+    }
+  }, [status]);
 
   //if (!user) return null;
 

@@ -1,5 +1,6 @@
 "use client";
 import api from "@/app/libs/axios";
+import { job } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -19,25 +20,7 @@ interface IUser {
     bio: string | null;
     profileImage: string | null;
   };
-  jobs: {
-    title: string;
-    maxApplicants: number;
-    description: string;
-    skills: string[];
-    location: string | null;
-    jobType: string;
-    salaryRange: string | null;
-    requirements: string[];
-    responsibilities: string[];
-    benefits: string[];
-    id: string;
-    createdAt: Date;
-    updatedAt: Date;
-    company: string | null;
-    isArchived: boolean;
-    embedding: number[];
-    createdById: string;
-  };
+  jobs: job[];
   bookmarks: {
     id: string;
     jobId: string;
@@ -69,6 +52,7 @@ interface IUser {
     userId: string | null;
     resumeId: string | null;
   };
+  AIRecommendedJobs: job[];
   loadingJobs: boolean;
 }
 
@@ -85,6 +69,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     queryKey: ["user", session?.user.id],
     queryFn: async () => {
       const response = await api.get(`/api/v1/users/${session?.user.id}`);
+      console.log(response.data.data)
       return response.data.data;
     },
     enabled: !!session?.user?.id,
@@ -142,9 +127,32 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     },
   });
 
+  const {
+    isPending: loadingRecommendedJobs,
+    error: recommendedJobsError,
+    data: AIRecommendedJobs,
+  } = useQuery({
+    queryKey: ["recommended_jobs", session?.user?.id],
+    queryFn: async () => {
+      const response = await api.get(
+        `/api/v1/jobs/ai-recommedation/${session?.user?.id}`
+      );
+      console.log(response)
+      return response.data.data;
+    },
+  });
+
   return (
     <UserContext.Provider
-      value={{ user, jobs, loadingJobs, bookmarks, appliedJobs, matchedJobs }}
+      value={{
+        user,
+        jobs,
+        loadingJobs,
+        bookmarks,
+        appliedJobs,
+        matchedJobs,
+        AIRecommendedJobs,
+      }}
     >
       {children}
     </UserContext.Provider>

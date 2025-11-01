@@ -43,9 +43,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import CompanyJobDetails from "./companyJobDetails";
+import { job } from "@/types";
 
 interface Ijobs {
-  job: any;
+  job: job;
   index: number;
   matchScore: number;
   setSelectedJob?: any;
@@ -62,7 +64,7 @@ const CompanyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
         <div className="flex justify-between items-start gap-4">
           <div className="flex gap-4 flex-1 min-w-0">
             <img
-              src={job.companyLogo}
+              src=""
               width={100}
               height={100}
               className="w-12 h-12 rounded-xl"
@@ -123,11 +125,11 @@ const CompanyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
         <div className="flex gap-2 flex-wrap">
           <Drawer>
             <DrawerTrigger>
-              <Button size="sm"  className="rounded-full">
+              <Button size="sm" className="rounded-full">
                 View Details
               </Button>
             </DrawerTrigger>
-            <MobileJobDetails job={job} recommendationPage />
+            <CompanyJobDetails job={job} recommendationPage />
           </Drawer>
         </div>
 

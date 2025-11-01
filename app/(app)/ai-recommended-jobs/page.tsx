@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Ban, Bookmark, DollarSign, MapPin, Search, Users } from "lucide-react";
@@ -16,9 +16,34 @@ import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 import Navbar from "@/components/Navbar";
 import MobileJobDetails from "@/components/MobileJobDetails";
 import { Badge } from "@/components/ui/badge";
+import { UserContext } from "@/app/context/userContext";
+import { Dialog } from "@radix-ui/react-dialog";
+import { DialogTrigger } from "@/components/ui/dialog";
+import UploadResume from "@/components/uploadResume";
+import { job } from "@/types";
 
 const Page = () => {
-  const [selectedJob, setSelectedJob] = useState(data[0]);
+  const { AIRecommendedJobs, user } = useContext(UserContext) as any;
+  //const [selectedJob, setSelectedJob] = useState(AIRecommendedJobs[0]);
+
+  if (!user?.Resume[0]) {
+    return (
+      <div>
+        <Navbar />
+        <div className="h-[calc(100vh-73px)] flex flex-col space-y-3 items-center justify-center">
+          <p className="text-gray-500">
+            Upload your resume to let AI recommend jobs for you!
+          </p>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Upload CV</Button>
+            </DialogTrigger>
+            <UploadResume />
+          </Dialog>
+        </div>
+      </div>
+    );
+  }
   return (
     <div>
       <Navbar />
@@ -32,25 +57,20 @@ const Page = () => {
           </p>
 
           <div className="space-y-4 pb-4 mt-10">
-            {data.map((job, index) => (
+            {AIRecommendedJobs?.map((job: job, index: number) => (
               <div className="flex gap-4">
                 <h1 className="xl:text-2xl text-[14px] font-semibold text-gray-700">
                   {index + 1}.
                 </h1>
                 <Card
                   key={index}
-                  className={`border hover:shadow-lg transition-all duration-200 w-full rounded-2xl cursor-pointer ${
-                    selectedJob.title === job.title
-                      ? "border-blue-500 bg-blue-50 shadow-md"
-                      : "border-gray-300 bg-[#f9f9fb]"
-                  }`}
-                  onClick={() => setSelectedJob(job)}
+                  className={`border hover:shadow-lg transition-all duration-200 w-full rounded-2xl cursor-pointer `}
                 >
                   <CardHeader className="flex flex-row justify-between items-start pb-3">
                     <div className="flex flex-row gap-2 items-center">
                       <>
                         <img
-                          src={job.companyLogo}
+                          src=""
                           width={100}
                           height={100}
                           className="w-12 h-12 rounded-xl"
@@ -86,11 +106,10 @@ const Page = () => {
                             {" "}
                             {job.jobType}
                           </Badge>
-                           <Badge className="bg-green-100 text-green-500 border-green-200">
-                          Suggested by 77%
-                        </Badge>
+                          <Badge className="bg-green-100 text-green-500 border-green-200">
+                            Suggested by 77%
+                          </Badge>
                         </CardDescription>
-                       
                       </div>
                     </div>
 

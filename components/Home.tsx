@@ -34,11 +34,12 @@ import { useSession } from "next-auth/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "@/app/libs/axios";
 import { UserContext } from "@/app/context/userContext";
+import { job } from "@/types";
 
 const Home = () => {
   const { data: session } = useSession();
   const { jobs, loadingJobs, user, bookmarks } = useContext(UserContext) as any;
-  const [selectedJob, setSelectedJob] = useState<any>(null);
+  const [selectedJob, setSelectedJob] = useState<job | null>(null);
   const queryClient = useQueryClient();
 
   const {
@@ -244,21 +245,28 @@ const Home = () => {
                       </div>
 
                       <div className="flex gap-3 mt-4">
-                        {hasApplied ? (
+                        {selectedJob.isClosed ? (
                           <Button className="flex-1 w-full" disabled>
-                            You have Applied
+                            This Job is closed
                           </Button>
                         ) : (
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button className="flex-1 w-full">
-                                Apply now
+                          <div className="w-full">
+                            {hasApplied ? (
+                              <Button className="flex-1 w-full" disabled>
+                                You have Applied
                               </Button>
-                            </DialogTrigger>
-                            {selectedJob && <Apply job={selectedJob} />}
-                          </Dialog>
+                            ) : (
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button className="flex-1 w-full">
+                                    Apply now
+                                  </Button>
+                                </DialogTrigger>
+                                {selectedJob && <Apply job={selectedJob} />}
+                              </Dialog>
+                            )}
+                          </div>
                         )}
-
                         {loadingBookmarks ? (
                           <Button className="bg-gray-300" disabled>
                             <Bookmark size={20} />

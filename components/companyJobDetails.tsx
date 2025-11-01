@@ -12,7 +12,17 @@ import {
 import { Button } from "./ui/button";
 import { Dialog, DialogTrigger } from "./ui/dialog";
 import Compatability from "./check-compatability";
-import { Ban, Bookmark, DollarSign, MapPin, Users } from "lucide-react";
+import {
+  Ban,
+  Bookmark,
+  CircleX,
+  ClosedCaption,
+  DollarSign,
+  MapPin,
+  Pen,
+  Pencil,
+  Users,
+} from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 import Apply from "./Apply";
 import api from "@/app/libs/axios";
@@ -25,7 +35,7 @@ interface IMobileJobDetails {
   recommendationPage?: boolean;
 }
 
-const MobileJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
+const CompanyJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
   const { user } = useContext(UserContext) as any;
   const {
     isPending: loadingResume,
@@ -57,6 +67,15 @@ const MobileJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
         authId: user.id,
         jobId: job?.id,
       });
+      console.log(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const closeJob = async () => {
+    try {
+      const response = await api.patch(`/api/v1/jobs/close/${job.id}`);
       console.log(response.data.data);
     } catch (error) {
       console.log(error);
@@ -109,32 +128,30 @@ const MobileJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
 
             <div className="flex gap-3 mt-4">
               {job?.isClosed ? (
-                <Button className="flex-1 w-full">This job is closed</Button>
+                <Button className="flex-1 w-full" disabled>
+                  You have closed this job
+                </Button>
               ) : (
-                <div className="w-full">
-                  {hasApplied ? (
-                    <Button className="flex-1 w-full" disabled>
-                      You have Applied
-                    </Button>
-                  ) : (
-                    <Dialog>
-                      <DialogTrigger className="w-full">
-                        {" "}
-                        <Button className="flex-1 w-full">Apply now</Button>
-                      </DialogTrigger>
-                      <Apply job={job} />
-                    </Dialog>
-                  )}
-                </div>
+                <Button
+                  className="flex-1 w-full"
+                  title="Close job"
+                  onClick={closeJob}
+                >
+                  Close job
+                </Button>
               )}
               <Button
                 className="bg-pink-400 hover:bg-pink-500"
+                title="Edit"
                 onClick={handleBookmark}
               >
-                <Bookmark size={20} />
+                <Pencil size={20} />
               </Button>
-              <Button className="bg-amber-300 hover:bg-amber-400">
-                <Ban size={20} />
+              <Button
+                className="bg-amber-300 hover:bg-amber-400"
+                title="Archieve"
+              >
+                <CircleX size={20} />
               </Button>
             </div>
           </div>
@@ -197,21 +214,10 @@ const MobileJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
               ))}
             </div>
           </div>
-
-          <div className="flex justify-center mt-8 pb-6 mx-4">
-            <Dialog>
-              <DialogTrigger>
-                <Button className="rounded-full px-8 py-4 text-sm shadow-lg hover:shadow-xl transition-shadow">
-                  See how well you match this job 🔥
-                </Button>
-              </DialogTrigger>
-              <Compatability job={job} />
-            </Dialog>
-          </div>
         </div>
       </div>
     </DrawerContent>
   );
 };
 
-export default MobileJobDetails;
+export default CompanyJobDetails;
