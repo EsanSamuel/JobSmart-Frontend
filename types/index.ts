@@ -31,3 +31,15 @@ export interface job {
     summary: string | null;
   }[];
 }
+
+export interface match {
+  id: string;
+  createdAt: Date;
+  userId: string | null;
+  jobId: string | null;
+  matchPercentage: number;
+  matchedSkills: string[];
+  missingSkills: string[];
+  summary: string;
+  resumeId: string | null;
+}

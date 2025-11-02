@@ -9,6 +9,7 @@ import {
   DollarSign,
   MapPin,
   Search,
+  SlidersHorizontal,
   Users,
 } from "lucide-react";
 import {
@@ -35,12 +36,41 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "@/app/libs/axios";
 import { UserContext } from "@/app/context/userContext";
 import { job } from "@/types";
+import FilterModal from "./filterModal";
 
 const Home = () => {
   const { data: session } = useSession();
-  const { jobs, loadingJobs, user, bookmarks } = useContext(UserContext) as any;
-  const [selectedJob, setSelectedJob] = useState<job | null>(null);
+  const { user, bookmarks } = useContext(UserContext) as any;
+  const [selectedJob, setSelectedJob] = useState<
+    (job & { createdBy: any }) | null
+  >(null);
+  const [search, setSearch] = useState("");
   const queryClient = useQueryClient();
+
+  const {
+    isPending: loadingJobs,
+    error: isError,
+    data: jobs,
+    refetch,
+  } = useQuery({
+    queryKey: ["jobs"],
+    queryFn: async () => {
+      const response = await api.get(`/api/v1/jobs?filter=${search}`);
+      return response.data.data;
+    },
+  });
+
+  useEffect(() => {
+    setSelectedJob(jobs?.[0]);
+    if (search === "") {
+      refetch();
+    }
+  }, [search]);
+
+  const handleSearch = () => {
+    setSearch(search);
+    refetch();
+  };
 
   const {
     isPending: loadingResume,
@@ -99,16 +129,77 @@ const Home = () => {
 
   if (loadingJobs) {
     return (
-      <div className="h-[calc(100vh-73px)] flex items-center justify-center">
-        <p className="text-gray-500">Loading jobs...</p>
+      <div className="h-[calc(100vh-73px)] flex flex-col mt-15">
+        <div className="shrink-0 xl:px-[15%] px-5 pt-5">
+          <div className="bg-linear-to-r from-blue-600 to-blue-400 h-auto rounded-2xl mb-6 lg:p-10 p-6 relative overflow-hidden">
+            {/* Decorative circles */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
+
+            <div className="relative z-10">
+              <h1 className="text-white text-2xl lg:text-3xl font-bold mb-2">
+                Find your dream job with JobSmart 🚀
+              </h1>
+              <p className="text-blue-50 text-sm lg:text-base max-w-2xl">
+                Use AI-powered matching to discover tech opportunities perfectly
+                tailored to your skills.
+              </p>
+            </div>
+          </div>
+          <div className="h-20 flex items-center justify-center">
+            <p className="text-gray-500">Loading jobs...</p>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!jobs || jobs.length === 0 || !selectedJob) {
     return (
-      <div className="h-[calc(100vh-73px)] flex items-center justify-center">
-        <p className="text-gray-500">No Jobs</p>
+      <div className="h-[calc(100vh-73px)] flex flex-col mt-15">
+        <div className="shrink-0 xl:px-[15%] px-5 pt-5">
+          <div className="bg-linear-to-r from-blue-600 to-blue-400 h-auto rounded-2xl mb-6 lg:p-10 p-6 relative overflow-hidden">
+            {/* Decorative circles */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
+
+            <div className="relative z-10">
+              <h1 className="text-white text-2xl lg:text-3xl font-bold mb-2">
+                Find your dream job with JobSmart 🚀
+              </h1>
+              <p className="text-blue-50 text-sm lg:text-base max-w-2xl">
+                Use AI-powered matching to discover tech opportunities perfectly
+                tailored to your skills.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex gap-2 items-center mb-6">
+            <div className="flex w-full items-center gap-2 border px-3 rounded-full py-2 border-gray-300 ">
+              <Search className="text-gray-600" />
+              <Input
+                type="search"
+                placeholder="Job title, keyword, company"
+                onChange={(e) => setSearch(e.target.value)}
+                value={search}
+                className="h-10 outline-none border-0 focus-visible:ring-0 xl:text text-[13px]"
+              />
+              <Button
+                type="submit"
+                className="rounded-full"
+                onClick={handleSearch}
+              >
+                Find Jobs
+              </Button>
+            </div>
+            <Button>
+              <SlidersHorizontal />
+            </Button>
+          </div>
+          <div className="h-20 flex items-center justify-center">
+            <p className="text-gray-500">No jobs found.</p>
+          </div>
+        </div>
       </div>
     );
   }
@@ -151,7 +242,7 @@ const Home = () => {
       `}</style>
 
       <div className="h-[calc(100vh-73px)] flex flex-col mt-15">
-        <div className="shrink-0 xl:px-[15%] px-5 pt-5">
+        <div className="shrink-0 xl:px-[12%] px-5 pt-5">
           <div className="bg-linear-to-r from-blue-600 to-blue-400 h-auto rounded-2xl mb-6 lg:p-10 p-6 relative overflow-hidden">
             {/* Decorative circles */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
@@ -168,20 +259,37 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="flex w-full items-center gap-2 border px-3 rounded-full py-2 border-gray-300 mb-6">
-            <Search className="text-gray-600" />
-            <Input
-              type="search"
-              placeholder="Job title, keyword, company"
-              className="h-10 outline-none border-0 focus-visible:ring-0 xl:text text-[13px]"
-            />
-            <Button type="submit" className="rounded-full">
-              Find Jobs
-            </Button>
+          <div className="flex gap-2 items-center mb-6">
+            <div className="flex w-full items-center gap-2 border px-3 rounded-full py-2 border-gray-300 ">
+              <Search className="text-gray-600" />
+              <Input
+                type="search"
+                placeholder="Job title, keyword, company"
+                onChange={(e) => setSearch(e.target.value)}
+                value={search}
+                className="h-10 outline-none border-0 focus-visible:ring-0 xl:text text-[13px]"
+              />
+
+              <Button
+                type="submit"
+                className="rounded-full"
+                onClick={handleSearch}
+              >
+                Find Jobs
+              </Button>
+            </div>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button>
+                  <SlidersHorizontal />
+                </Button>
+              </DialogTrigger>
+              <FilterModal />
+            </Dialog>
           </div>
         </div>
 
-        <div className="flex-1 xl:px-[15%] px-5 pb-5 min-h-0">
+        <div className="flex-1 xl:px-[12%] px-5 pb-5 min-h-0">
           <div className="flex gap-6 h-full">
             <div className="flex flex-col w-full lg:w-[45%] xl:w-[420px] min-h-0">
               <h1 className="lg:text-2xl text-[18px] font-bold mb-4 text-gray-800 shrink-0">

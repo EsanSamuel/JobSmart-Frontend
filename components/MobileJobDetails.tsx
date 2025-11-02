@@ -109,7 +109,7 @@ const MobileJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
 
             <div className="flex gap-3 mt-4">
               {job?.isClosed ? (
-                <Button className="flex-1 w-full">This job is closed</Button>
+                <Button className="flex-1 w-full" disabled>This job is closed</Button>
               ) : (
                 <div className="w-full">
                   {hasApplied ? (

@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Upload, FileText, Sparkles, User, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,9 @@ import "react-circular-progressbar/dist/styles.css";
 import { UserContext } from "@/app/context/userContext";
 import axios from "axios";
 import { ScrollArea } from "./ui/scroll-area";
+import { match } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/app/libs/axios";
 
 interface IJob {
   job: {
@@ -45,8 +48,26 @@ const Compatibility = ({ job }: IJob) => {
   const { user } = useContext(UserContext) as any;
   const [file, setFile] = useState<File | null>();
   const [isMatched, setIsMatched] = useState(false);
-  const [match, setMatch] = useState();
+  const [match, setMatch] = useState<match>();
   const [progress, setProgress] = React.useState(13);
+
+  const {
+    isPending: loadingResume,
+    error: resumeError,
+    data: resumes,
+  } = useQuery({
+    queryKey: ["resumes", job?.id],
+    queryFn: async () => {
+      const response = await api.get(`/api/v1/jobs/resume/${job?.id}`);
+      console.log("Applied", response.data.data);
+      return response.data.data.result;
+    },
+  });
+
+  const hasApplied = useMemo(() => {
+    const resume = resumes?.map((resume: any) => resume.user.id);
+    return resume?.includes(user.id);
+  }, [resumes]);
 
   const matchResume = async () => {
     if (!job.id) {
@@ -96,6 +117,32 @@ const Compatibility = ({ job }: IJob) => {
       }
     );
 
+    console.log(response.data.data);
+  };
+
+  const matchProfileResume = async () => {
+    if (!job.id) {
+      return null;
+    }
+
+    const formData = new FormData();
+    formData.append("authId", user.id);
+    formData.append("resumeId", user.id);
+    if (file) {
+      formData.append("CV", file);
+    }
+
+    const response = await axios.post(
+      `http://localhost:5000/api/v1/match/${job.id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    setIsMatched(true);
+    setMatch(response.data.data);
     console.log(response.data.data);
   };
 
@@ -205,7 +252,10 @@ const Compatibility = ({ job }: IJob) => {
                     </p>
                   </div>
                 </div>
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-10">
+                <Button
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-10"
+                  onClick={matchProfileResume}
+                >
                   Use Profile Resume
                 </Button>
               </div>
@@ -235,7 +285,7 @@ const Compatibility = ({ job }: IJob) => {
           <div className="flex flex-col items-center mt-5 gap-3">
             <div className="w-30 h-30">
               <CircularProgressbar
-                value={match?.matchPercentage}
+                value={match?.matchPercentage as number}
                 text={`${match?.matchPercentage}%`}
               />
               ;
@@ -283,9 +333,15 @@ const Compatibility = ({ job }: IJob) => {
           </div>
         )}
       </ScrollArea>
-      <Button className="w-full mt-5" onClick={submitResume}>
-        Apply
-      </Button>
+      {hasApplied ? (
+        <Button className="w-full mt-5" disabled>
+          You have already applied
+        </Button>
+      ) : (
+        <Button className="w-full mt-5" onClick={submitResume}>
+          Apply
+        </Button>
+      )}
     </DialogContent>
   );
 };

@@ -63,7 +63,7 @@ export function NavMain({
                           href={subItem.url}
                           className={`${
                             pathName === subItem.url &&
-                            "bg-blue-500 text-white hover:bg-blue-600"
+                            "bg-blue-600 text-white hover:bg-blue-600"
                           } hover:bg-blue-500`}
                         >
                           <span>{subItem.title}</span>

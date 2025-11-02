@@ -21,7 +21,7 @@ import { redirect } from "next/navigation";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
-  const { user } = useContext(UserContext) as any;
+  const { user, AIRecommendedJobs } = useContext(UserContext) as any;
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -37,7 +37,7 @@ const Navbar = () => {
   }, [user]);
 
   return (
-    <nav className="border-b border-gray-200 bg-white px-5 xl:px-[15%] py-4 fixed w-full mb-10">
+    <nav className="border-b border-gray-300 bg-white px-5 xl:px-[12%] py-4 fixed w-full mb-10">
       <div className="flex items-center justify-between">
         <Link href="/">
           <h1 className="text-2xl font-bold text-blue-600">JobSmart</h1>
@@ -53,7 +53,7 @@ const Navbar = () => {
             >
               <Sparkles className="h-5 w-5 text-blue-600" />
               <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center bg-blue-600 text-[10px]">
-                3
+                {AIRecommendedJobs?.length}
               </Badge>
             </Button>
           </Link>

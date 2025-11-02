@@ -4,10 +4,12 @@ import Home from "@/components/Home";
 import Navbar from "@/components/Navbar";
 import { UserContext } from "../context/userContext";
 import { redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const Page = () => {
+  const { data: session, status } = useSession();
   const { user } = useContext(UserContext) as any;
-  if (!user) {
+  if (!session?.user && status !== "loading") {
     redirect("/login");
   }
   return (

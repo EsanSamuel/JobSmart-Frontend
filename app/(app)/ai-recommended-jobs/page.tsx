@@ -30,8 +30,8 @@ const Page = () => {
     return (
       <div>
         <Navbar />
-        <div className="h-[calc(100vh-73px)] flex flex-col space-y-3 items-center justify-center">
-          <p className="text-gray-500">
+        <div className="h-[calc(100vh-73px)] flex flex-col space-y-3 items-center justify-center lg:p-0 p-5">
+          <p className="text-gray-500 text-center">
             Upload your resume to let AI recommend jobs for you!
           </p>
           <Dialog>
@@ -106,8 +106,8 @@ const Page = () => {
                             {" "}
                             {job.jobType}
                           </Badge>
-                          <Badge className="bg-green-100 text-green-500 border-green-200">
-                            Suggested by 77%
+                          <Badge className="bg-green-100 text-green-600 border-green-200">
+                            Suggested by {job?.matchScore as number}%
                           </Badge>
                         </CardDescription>
                       </div>

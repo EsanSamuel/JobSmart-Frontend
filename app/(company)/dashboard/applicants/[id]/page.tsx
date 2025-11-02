@@ -110,7 +110,7 @@ const Page = () => {
         </header>
         <div className="flex flex-col w-full  lg:p-10 p-5 min-h-0 ">
           <div className="pb-5 lg:flex justify-between items-center">
-            <h1 className="text-3xl font-bold mb-5">
+            <h1 className="text-3xl font-bold mb-5 text-gray-800">
               Applicants ({totalApplicants})
             </h1>
             <Select

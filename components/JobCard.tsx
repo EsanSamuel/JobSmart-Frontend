@@ -54,8 +54,8 @@ interface IJob {
     createdById: string;
   };
   index: number;
-  selectedJob: any;
-  setSelectedJob: any;
+  selectedJob?: any;
+  setSelectedJob?: any;
 }
 
 const JobCard = ({ job, index, selectedJob, setSelectedJob }: IJob) => {
