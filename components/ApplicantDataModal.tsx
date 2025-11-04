@@ -5,21 +5,40 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-import { Sparkles, User } from "lucide-react";
+import { Sparkles, User, Star } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { Button } from "./ui/button";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/app/libs/axios";
+import { usePathname } from "next/navigation";
 
 const ApplicantDataModal = ({ match, job }: { match: any; job: any }) => {
   const [progress, setProgress] = React.useState(13);
   const [filterResume, setFilterResume] = useState("ALL");
+  const [isShortlisted, setIsShortlisted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const pathname = usePathname();
+  const isApplicantPath = pathname?.includes("/applicants/");
+  const isPath = pathname?.includes("/applicants/shortlisted");
+
   React.useEffect(() => {
     const timer = setTimeout(() => setProgress(66), 500);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleAddToShortlist = async () => {
+    setIsLoading(true);
+    try {
+      await api.patch(`/api/v1/jobs/shortlist/${match.id}`);
+      setIsShortlisted(true);
+    } catch (error) {
+      console.error("Error adding to shortlist:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <DialogContent className="sm:max-w-[500px]">
@@ -59,22 +78,24 @@ const ApplicantDataModal = ({ match, job }: { match: any; job: any }) => {
                 Missing skills
               </h1>
               <ul className="">
-               {match.missingSkills.length > 0 ? (
-                <div className="grid grid-cols-2 space-y-2 ">
-                     {match?.missingSkills.map((skills: any, idx: number) => (
-                  <div key={idx} className="flex items-start gap-3 w-full">
-                    <div className="w-2 h-2 text-green-500 rounded-full mt-2">
-                      *
-                    </div>
-                    <span className="text-gray-600 text-sm">{skills}</span>
+                {match?.missingSkills.length > 0 ? (
+                  <div className="grid grid-cols-2 space-y-2 ">
+                    {match?.missingSkills.map((skills: any, idx: number) => (
+                      <div key={idx} className="flex items-start gap-3 w-full">
+                        <div className="w-2 h-2 text-green-500 rounded-full mt-2">
+                          *
+                        </div>
+                        <span className="text-gray-600 text-sm">{skills}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-                </div>
-               ):(
-                <div className="w-full flex justify-center items-center">
-                    <p className="text-sm text-gray-600 text-center">No missing skills!</p>
-                </div>
-               )}
+                ) : (
+                  <div className="w-full flex justify-center items-center">
+                    <p className="text-sm text-gray-600 text-center">
+                      No missing skills!
+                    </p>
+                  </div>
+                )}
               </ul>
             </div>
           </div>
@@ -96,9 +117,37 @@ const ApplicantDataModal = ({ match, job }: { match: any; job: any }) => {
           </div>
         </div>
       </ScrollArea>
-      <a href={match.fileUrl} target="_blank" rel="noopener noreferrer">
-        <Button className="w-full mt-5">View Resume</Button>
-      </a>
+      <div className="flex gap-2 mt-5">
+        {isApplicantPath &&
+          pathname !== "/dashboard/applicants/shortlisted" &&
+          !isPath && (
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={handleAddToShortlist}
+              disabled={isShortlisted || isLoading}
+            >
+              <Star
+                className={`h-4 w-4 mr-2 ${
+                  isShortlisted ? "fill-yellow-400 text-yellow-400" : ""
+                }`}
+              />
+              {isShortlisted
+                ? "Shortlisted"
+                : isLoading
+                ? "Adding..."
+                : "Add to Shortlist"}
+            </Button>
+          )}
+        <a
+          href={match?.fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1"
+        >
+          <Button className="w-full">View Resume</Button>
+        </a>
+      </div>
     </DialogContent>
   );
 };

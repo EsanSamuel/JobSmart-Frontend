@@ -94,10 +94,10 @@ const Apply = ({ job }: IJob) => {
             <SendHorizontal className="h-6 w-6 text-white" />
           </div>
           <div className="flex-1 items-start justify-start">
-            <DialogTitle className="lg:text-2xl text-[16px] font-bold text-gray-900">
+            <DialogTitle className="lg:text-2xl text-[16px] font-bold text-gray-900 text-start">
               Apply
             </DialogTitle>
-            <DialogDescription className="text-gray-600 mt-1">
+            <DialogDescription className="text-gray-600 mt-1 text-start">
               Apply to this job by sending your CV.
             </DialogDescription>
           </div>

@@ -1,18 +1,39 @@
 "use client";
+import api from "@/app/libs/axios";
 import { data } from "@/app/libs/dummyData";
 import CompanyJobsCard from "@/components/CompanyJobs";
 import DashboardNav from "@/components/dashboardNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarInset } from "@/components/ui/sidebar";
+import { useQuery } from "@tanstack/react-query";
 import { CheckCircle, Search } from "lucide-react";
+import { useSession } from "next-auth/react";
 import React from "react";
 
 const Page = () => {
+  const { data: session } = useSession();
   const scrollbarStyles = {
     scrollbarWidth: "thin",
     scrollbarColor: "#cbd5e1 transparent",
   };
+
+  const {
+    isPending,
+    error,
+    data: jobs,
+  } = useQuery({
+    queryKey: ["jobs", session?.user.id],
+    queryFn: async () => {
+      const response = await api.get(
+        `/api/v1/jobs/company/${session?.user.id}`
+      );
+      return response.data.data;
+    },
+    enabled: !!session?.user?.id,
+  });
+
+  const closedJobs = () => jobs?.filter((job: any) => job.isClosed === true);
   return (
     <>
       <style jsx>{`
@@ -54,7 +75,7 @@ const Page = () => {
             style={scrollbarStyles as any}
           >
             <div className="space-y-4 overflow-y-auto">
-              {data.map((job, index) => {
+              {closedJobs().map((job, index) => {
                 const matchScore = 75 + Math.floor(Math.random() * 20);
 
                 return (

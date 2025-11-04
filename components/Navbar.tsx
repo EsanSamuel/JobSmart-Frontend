@@ -1,5 +1,11 @@
 "use client";
-import { Bell, Bookmark, Sparkles, GalleryVerticalEnd } from "lucide-react";
+import {
+  Bell,
+  Bookmark,
+  Sparkles,
+  GalleryVerticalEnd,
+  Waypoints,
+} from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "./ui/button";
@@ -40,7 +46,9 @@ const Navbar = () => {
     <nav className="border-b border-gray-300 bg-white px-5 xl:px-[12%] py-4 fixed w-full mb-10">
       <div className="flex items-center justify-between">
         <Link href="/">
-          <h1 className="text-2xl font-bold text-blue-600">JobSmart</h1>
+          <h1 className="text-2xl font-bold text-blue-600 flex items-center">
+            <Waypoints className="mr-2" /> JobSmart
+          </h1>
         </Link>
 
         <div className="flex items-center gap-3 sm:flex hidden">

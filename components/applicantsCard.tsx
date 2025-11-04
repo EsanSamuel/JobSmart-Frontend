@@ -29,9 +29,10 @@ import ApplicantDataModal from "./ApplicantDataModal";
 interface Ijobs {
   job: any;
   index?: number;
+  shortlisted?: boolean;
 }
 
-export default function ApplicantsCard({ job, index }: Ijobs) {
+export default function ApplicantsCard({ job, index, shortlisted }: Ijobs) {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = React.useState(false);
   const router = useRouter();
@@ -51,7 +52,16 @@ export default function ApplicantsCard({ job, index }: Ijobs) {
     enabled: !!session?.user?.id,
   });
 
-  const applicantsMinusFirst = job?.Resume.slice(1, 3);
+  const showApplicants = () => {
+    if (!shortlisted) {
+      return job?.Resume || [];
+    } else {
+      return (
+        job?.Resume?.filter((resume: any) => resume.status === "ShortListed") ||
+        []
+      );
+    }
+  };
 
   return (
     <Collapsible
@@ -71,8 +81,8 @@ export default function ApplicantsCard({ job, index }: Ijobs) {
                   variant="secondary"
                   className="bg-blue-100 text-blue-700 hover:bg-blue-100"
                 >
-                  {job?.Resume?.length}{" "}
-                  {job?.Resume?.length === 1 ? "Applicant" : "Applicants"}
+                  {showApplicants()?.length}{" "}
+                  {showApplicants()?.length === 1 ? "Applicant" : "Applicants"}
                 </Badge>
               </div>
             </div>
@@ -93,25 +103,25 @@ export default function ApplicantsCard({ job, index }: Ijobs) {
           </CollapsibleTrigger>
         </div>
 
-        {job?.Resume[0] && (
+        {showApplicants()?.[0] && (
           <div className="px-6 py-4 border-t border-gray-100">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4 flex-1">
                 <Avatar className="h-8 w-8 rounded-full">
                   <AvatarImage
-                    src={job?.Resume[0]?.user?.profileImage}
-                    alt={job.Resume[0]?.user?.username}
+                    src={showApplicants()[0]?.user?.profileImage}
+                    alt={showApplicants()[0]?.user?.username}
                   />
                   <AvatarFallback className="rounded-full">CN</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-gray-900 text-base">
-                    {job.Resume[0]?.user?.username}
+                    {showApplicants()[0]?.user?.username}
                   </h3>
                   <div className="flex items-center gap-1.5 mt-1">
                     <Mail className="w-3.5 h-3.5 text-gray-400" />
                     <p className="text-sm text-gray-600 truncate xl:w-70 w-30">
-                      {job.Resume[0]?.user?.email}
+                      {showApplicants()[0]?.user?.email}
                     </p>
                   </div>
                 </div>
@@ -126,7 +136,7 @@ export default function ApplicantsCard({ job, index }: Ijobs) {
                     <span className="lg:block md:block hidden">View</span>
                   </Button>
                 </DialogTrigger>
-                <ApplicantDataModal match={job.Resume[0]} job={job} />
+                <ApplicantDataModal match={showApplicants()[0]} job={job} />
               </Dialog>
             </div>
           </div>
@@ -134,57 +144,74 @@ export default function ApplicantsCard({ job, index }: Ijobs) {
       </div>
 
       <CollapsibleContent className="space-y-3 mt-3">
-        {applicantsMinusFirst?.map((applicant: any, idx: number) => (
-          <div
-            className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all overflow-hidden"
-            key={idx}
-          >
-            <div className="px-6 py-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-4 flex-1">
-                  <Avatar className="h-8 w-8 rounded-full">
-                    <AvatarImage
-                      src={applicant?.user?.profileImage}
-                      alt={applicant?.user?.username}
-                    />
-                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-900 text-base">
-                      {applicant?.user?.username}
-                    </h3>
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <Mail className="w-3.5 h-3.5 text-gray-400" />
-                      <p className="text-sm text-gray-600 truncate">
-                        {applicant?.user?.email}
-                      </p>
+        {showApplicants()
+          .slice(1, 3)
+          ?.map((applicant: any, idx: number) => (
+            <div
+              className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all overflow-hidden"
+              key={idx}
+            >
+              <div className="px-6 py-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-4 flex-1">
+                    <Avatar className="h-8 w-8 rounded-full">
+                      <AvatarImage
+                        src={applicant?.user?.profileImage}
+                        alt={applicant?.user?.username}
+                      />
+                      <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-gray-900 text-base">
+                        {applicant?.user?.username}
+                      </h3>
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <Mail className="w-3.5 h-3.5 text-gray-400" />
+                        <p className="text-sm text-gray-600 truncate">
+                          {applicant?.user?.email}
+                        </p>
+                      </div>
                     </div>
                   </div>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        size="sm"
+                        className="bg-blue-600 hover:bg-blue-700 gap-2"
+                      >
+                        <FileText className="w-4 h-4" />
+                        <span className="lg:block md:block hidden">View</span>
+                      </Button>
+                    </DialogTrigger>
+                    <ApplicantDataModal
+                      match={applicant}
+                      job={job}
+                    />
+                  </Dialog>
                 </div>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      size="sm"
-                      className="bg-blue-600 hover:bg-blue-700 gap-2"
-                    >
-                      <FileText className="w-4 h-4" />
-                      <span className="lg:block md:block hidden">View</span>
-                    </Button>
-                  </DialogTrigger>
-                  <ApplicantDataModal match={applicant} job={job} />
-                </Dialog>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
         <div className="flex items-center justify-center w-full mt-5 p-5">
-          <Button
-            className=" w-full rounded-full border-gray-300"
-            variant="outline"
-            onClick={() => router.push(`/dashboard/applicants/${job.id}`)}
-          >
-            View All
-          </Button>
+          {shortlisted ? (
+            <Button
+              className=" w-full rounded-full border-gray-300"
+              variant="outline"
+              onClick={() =>
+                router.push(`/dashboard/applicants/shortlisted/${job.id}`)
+              }
+            >
+              View All
+            </Button>
+          ) : (
+            <Button
+              className=" w-full rounded-full border-gray-300"
+              variant="outline"
+              onClick={() => router.push(`/dashboard/applicants/${job.id}`)}
+            >
+              View All
+            </Button>
+          )}
         </div>
       </CollapsibleContent>
     </Collapsible>

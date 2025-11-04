@@ -159,10 +159,10 @@ const Compatibility = ({ job }: IJob) => {
             <Sparkles className="h-6 w-6 text-white" />
           </div>
           <div className="flex-1 items-start justify-start">
-            <DialogTitle className="lg:text-2xl text-[16px] font-bold text-gray-900">
+            <DialogTitle className="lg:text-2xl text-[16px] font-bold text-gray-900 text-start">
               Check Job Compatibility
             </DialogTitle>
-            <DialogDescription className="text-gray-600 mt-1">
+            <DialogDescription className="text-gray-600 mt-1 text-start">
               Let AI analyze your resume and predict your match score
             </DialogDescription>
           </div>

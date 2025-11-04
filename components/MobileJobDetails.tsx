@@ -12,16 +12,25 @@ import {
 import { Button } from "./ui/button";
 import { Dialog, DialogTrigger } from "./ui/dialog";
 import Compatability from "./check-compatability";
-import { Ban, Bookmark, DollarSign, MapPin, Users } from "lucide-react";
+import {
+  Ban,
+  Bookmark,
+  Building2,
+  Clock,
+  DollarSign,
+  MapPin,
+  Users,
+} from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 import Apply from "./Apply";
 import api from "@/app/libs/axios";
 import { UserContext } from "@/app/context/userContext";
 import { useQuery } from "@tanstack/react-query";
 import { job } from "@/types";
+import { formatDistance, subDays } from "date-fns";
 
 interface IMobileJobDetails {
-  job: job;
+  job: job & { createdBy: any };
   recommendationPage?: boolean;
 }
 
@@ -41,15 +50,16 @@ const MobileJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
   });
 
   const hasApplied = useMemo(() => {
-    const resume = resumes?.map((resume: any) => resume.user.id);
-    return resume?.includes(user.id);
+    const resume = resumes?.map((resume: any) => resume?.user?.id);
+    return resume?.includes(user?.id);
   }, [resumes]);
+
   const scrollbarStyles = {
     scrollbarWidth: "thin",
     scrollbarColor: "#cbd5e1 transparent",
   };
   const handleBookmark = async () => {
-    if (!job.id) {
+    if (!job?.id) {
       return null;
     }
     try {
@@ -90,13 +100,17 @@ const MobileJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
       >
         <div className="p-6">
           <div className="flex flex-col gap-3 mb-6">
-            <h1 className="font-bold text-2xl text-gray-800">{job.title}</h1>
+            <h1 className="font-bold text-2xl text-gray-800">{job?.title}</h1>
+
             <div className="flex items-center gap-2 text-gray-600">
-              <span className="font-medium">{job.company}</span>
+              <span className="font-medium flex items-center gap-2 text-gray-600">
+                <Building2 className="h-4 w-4 text-orange-500" />{" "}
+                {job?.createdBy?.username}
+              </span>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
               <MapPin className="h-4 w-4 text-red-500" />
-              <span>{job.location}</span>
+              <span>{job?.location}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
               <DollarSign className="h-4 w-4 text-green-600" />
@@ -106,10 +120,21 @@ const MobileJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
               <Users className="h-4 w-4 text-pink-400" />
               <span className="">{job?.Resume?.length} applicants</span>
             </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <Clock className="h-4 w-4 text-blue-600" />
+              <span className="">
+                Posted{" "}
+                {formatDistance(subDays(job?.createdAt, 3), new Date(), {
+                  addSuffix: true,
+                })}
+              </span>
+            </div>
 
             <div className="flex gap-3 mt-4">
               {job?.isClosed ? (
-                <Button className="flex-1 w-full" disabled>This job is closed</Button>
+                <Button className="flex-1 w-full" disabled>
+                  This job is closed
+                </Button>
               ) : (
                 <div className="w-full">
                   {hasApplied ? (

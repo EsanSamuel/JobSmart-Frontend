@@ -6,7 +6,10 @@ import {
   Ban,
   Bookmark,
   BookmarkCheck,
+  Building2,
+  Clock,
   DollarSign,
+  Loader2,
   MapPin,
   Search,
   SlidersHorizontal,
@@ -37,6 +40,7 @@ import api from "@/app/libs/axios";
 import { UserContext } from "@/app/context/userContext";
 import { job } from "@/types";
 import FilterModal from "./filterModal";
+import { format, formatDistance, formatRelative, subDays } from "date-fns";
 
 const Home = () => {
   const { data: session } = useSession();
@@ -146,7 +150,8 @@ const Home = () => {
               </p>
             </div>
           </div>
-          <div className="h-20 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3 mt-20">
+            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
             <p className="text-gray-500">Loading jobs...</p>
           </div>
         </div>
@@ -328,7 +333,8 @@ const Home = () => {
                         {selectedJob?.title}
                       </h1>
                       <div className="flex items-center gap-2 text-gray-600">
-                        <span className="font-medium">
+                        <span className="font-medium flex items-center gap-2 text-gray-600">
+                          <Building2 className="h-4 w-4 text-orange-500" />{" "}
                           {selectedJob?.createdBy.username}
                         </span>
                       </div>
@@ -349,6 +355,19 @@ const Home = () => {
                           {selectedJob?.Resume.length > 1
                             ? "applicants"
                             : "applicant"}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Clock className="h-4 w-4 text-blue-600" />
+                        <span className="font-">
+                          Posted{" "}
+                          {formatDistance(
+                            subDays(selectedJob.createdAt, 3),
+                            new Date(),
+                            {
+                              addSuffix: true,
+                            }
+                          )}
                         </span>
                       </div>
 
@@ -380,10 +399,7 @@ const Home = () => {
                             <Bookmark size={20} />
                           </Button>
                         ) : isBookmarked ? (
-                          <Button
-                            className="bg-blue-500 hover:bg-blue-600"
-                            onClick={handleBookmark}
-                          >
+                          <Button className="bg-blue-500 hover:bg-blue-600">
                             <BookmarkCheck size={20} className="fill-current" />
                           </Button>
                         ) : (

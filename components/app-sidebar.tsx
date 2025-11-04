@@ -109,7 +109,7 @@ const data = {
         },
         {
           title: "Shortlisted",
-          url: "/company/applicants/shortlisted",
+          url: "/dashboard/applicants/shortlisted",
         },
         {
           title: "Interviews",
@@ -117,7 +117,7 @@ const data = {
         },
       ],
     },
-    {
+    /* {
       title: "Messages",
       url: "/company/messages",
       icon: MessageSquare,
@@ -131,7 +131,7 @@ const data = {
           url: "/company/messages/sent",
         },
       ],
-    },
+    },*/
     {
       title: "Settings",
       url: "/company/settings",
@@ -189,7 +189,7 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    const { user } = React.useContext(UserContext) as any;
+  const { user } = React.useContext(UserContext) as any;
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -197,7 +197,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.jobsListed} />
+        {/*<NavProjects projects={data.jobsListed} />*/}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

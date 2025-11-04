@@ -23,9 +23,11 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { Briefcase, CheckCircle, Clock, Users } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export default function Page() {
   const { data: session } = useSession();
+  const [totalApplicants, setTotalApplicants] = useState(0);
   const scrollbarStyles = {
     scrollbarWidth: "thin",
     scrollbarColor: "#cbd5e1 transparent",
@@ -45,6 +47,19 @@ export default function Page() {
     },
     enabled: !!session?.user?.id,
   });
+
+  useEffect(() => {
+    const getTotalApplicants = () => {
+      if (jobs) {
+        let applicants = 0;
+        for (const job of jobs) {
+          applicants += job?.Resume?.length;
+          setTotalApplicants(applicants);
+        }
+      }
+    };
+    getTotalApplicants();
+  }, [jobs]);
 
   return (
     <>
@@ -79,7 +94,9 @@ export default function Page() {
                   <Briefcase className="h-6 w-6 text-blue-600" />
                 </div>
               </div>
-              <p className="text-3xl font-bold text-gray-900 mb-1">8</p>
+              <p className="text-3xl font-bold text-gray-900 mb-1">
+                {jobs?.length}
+              </p>
               <p className="text-sm text-gray-600 font-medium">Jobs Listed</p>
             </div>
 
@@ -89,7 +106,9 @@ export default function Page() {
                   <Users className="h-6 w-6 text-purple-600" />
                 </div>
               </div>
-              <p className="text-3xl font-bold text-gray-900 mb-1">102</p>
+              <p className="text-3xl font-bold text-gray-900 mb-1">
+                {totalApplicants}
+              </p>
               <p className="text-sm text-gray-600 font-medium">Applicants</p>
             </div>
 

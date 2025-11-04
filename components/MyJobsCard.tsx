@@ -43,9 +43,10 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import api from "@/app/libs/axios";
 import { UserContext } from "@/app/context/userContext";
+import { job } from "@/types";
 
 interface Ijobs {
-  job: any;
+  job: job & { createdBy: any };
   index: number;
   matchScore: number;
   setSelectedJob?: any;
@@ -67,20 +68,21 @@ const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
   });
 
   const hasApplied = useMemo(() => {
-    const resume = resumes?.map((resume: any) => resume.user.id);
-    return resume?.includes(user.id);
+    const resume = resumes?.map((resume: any) => resume?.user?.id);
+    return resume?.includes(user?.id);
   }, [resumes]);
   return (
     <Card
       key={index}
-      className="border border-gray-200 hover:shadow-xl hover:border-blue-200 transition-all duration-300 w-full rounded-2xl cursor-pointer bg-white overflow-hidden group"
+      className="border border-gray-200 hover:shadow-xl hover:border-blue-200 transition-all duration-300 w-full rounded-2xl 
+      cursor-pointer bg-white overflow-hidden group"
       onClick={() => setSelectedJob(job)}
     >
       <CardHeader className="pb-4">
         <div className="flex justify-between items-start gap-4">
           <div className="flex gap-4 flex-1 min-w-0">
             <img
-              src={job.companyLogo}
+              src="https://logo.clearbit.com/flutterwave.com"
               width={100}
               height={100}
               className="w-12 h-12 rounded-xl"
@@ -90,14 +92,14 @@ const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
             <div className="flex-1 min-w-0">
               <div className="flex items-start gap-2 mb-2">
                 <CardTitle className="text-xl font-bold text-gray-900 line-clamp-2 flex-1">
-                  {job.title}
+                  {job?.title}
                 </CardTitle>
               </div>
 
               <div className="flex flex-wrap items-center gap-2 text-sm mb-3">
                 <span className="font-semibold text-gray-900 flex items-center gap-1">
                   <Building2 className="h-3.5 w-3.5 text-gray-400" />
-                  {job.company}
+                 { job?.createdBy?.username}
                 </span>
                 <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
                 <div className="flex items-center gap-1 text-gray-600">
@@ -114,7 +116,7 @@ const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">
                   <DollarSign className="h-3 w-3 mr-1" />
-                  {job.salaryRange}
+                  {job?.salaryRange}
                 </Badge>
                 {matchScore && (
                   <Badge
@@ -168,7 +170,7 @@ const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
             </Button>
           )}
           <Drawer>
-            <DrawerTrigger>
+            <DrawerTrigger asChild>
               <Button size="sm" variant="outline" className="rounded-full">
                 View Details
               </Button>
