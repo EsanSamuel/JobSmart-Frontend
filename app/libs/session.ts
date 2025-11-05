@@ -69,16 +69,16 @@ export const authOptions: AuthOptions = {
             image: user.image,
             role: "USER",
           });
-          console.log("✅ Google OAuth successful");
+          console.log("Google OAuth successful");
           return true;
         } catch (error) {
           if (axios.isAxiosError(error)) {
             console.error(
-              "❌ Google OAuth failed:",
+              "Google OAuth failed:",
               error.response?.data?.message || error.message
             );
           } else {
-            console.error("❌ Google OAuth error:", error);
+            console.error("Google OAuth error:", error);
           }
           return false;
         }

@@ -21,7 +21,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
-import { Briefcase, CheckCircle, Clock, Users } from "lucide-react";
+import { Briefcase, CheckCircle, Clock, Loader2, Users } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
@@ -142,28 +142,43 @@ export default function Page() {
               className="flex-1 overflow-y-auto custom-scrollbar pr-2"
               style={scrollbarStyles as any}
             >
-              <div className="space-y-4 overflow-y-auto">
-                {jobs?.map((job: any, index: number) => {
-                  const matchScore = 75 + Math.floor(Math.random() * 20);
-
-                  return (
-                    <CompanyJobsCard
-                      job={job}
-                      index={index}
-                      matchScore={matchScore}
-                      //setSelectedJob={setSelectedJob}
-                    />
-                  );
-                })}
-                <div className="flex items-center justify-center w-full mt-5">
-                  <Button
-                    className=" w-full rounded-full border-gray-300"
-                    variant="outline"
-                  >
-                    View All
-                  </Button>
+              {isPending ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="flex flex-col items-center gap-3">
+                    <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                    <p className="text-gray-500">Loading jobs...</p>
+                  </div>
                 </div>
-              </div>
+              ) : !jobs || jobs.length === 0 ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="flex flex-col items-center gap-3">
+                    <p className="text-gray-500">No jobs found</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4 overflow-y-auto">
+                  {jobs.map((job: any, index: number) => {
+                    const matchScore = 75 + Math.floor(Math.random() * 20);
+
+                    return (
+                      <CompanyJobsCard
+                        key={job.id || index}
+                        job={job}
+                        index={index}
+                        matchScore={matchScore}
+                      />
+                    );
+                  })}
+                  <div className="flex items-center justify-center w-full mt-5">
+                    <Button
+                      className="w-full rounded-full border-gray-300"
+                      variant="outline"
+                    >
+                      View All
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

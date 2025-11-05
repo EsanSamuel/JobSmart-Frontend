@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { job } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { CheckCircle, Search } from "lucide-react";
+import { CheckCircle, Loader2, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
@@ -34,6 +34,27 @@ const Page = () => {
     },
     enabled: !!session?.user?.id,
   });
+
+  if (isPending) {
+    return (
+      <div className="h-screen flex items-center justify-center py-12">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+          <p className="text-gray-500">Loading applicants...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!jobs) {
+    return (
+      <div className="h-screen flex items-center justify-center py-12">
+        <div className="flex flex-col items-center gap-3">
+          <p className="text-gray-500">No Applicants</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <>
       <style jsx>{`

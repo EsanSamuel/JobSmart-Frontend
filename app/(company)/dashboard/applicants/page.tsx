@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
-import { CheckCircle, Search } from "lucide-react";
+import { CheckCircle, Loader2, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 import React from "react";
 
@@ -33,7 +33,28 @@ const Page = () => {
     },
     enabled: !!session?.user?.id,
   });
-  
+
+  if (isPending) {
+    return (
+      <div className="h-screen flex items-center justify-center py-12">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+          <p className="text-gray-500">Loading applicants...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!jobs) {
+    return (
+      <div className="h-screen flex items-center justify-center py-12">
+        <div className="flex flex-col items-center gap-3">
+          <p className="text-gray-500">No Applicants</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <style jsx>{`
@@ -57,7 +78,9 @@ const Page = () => {
         </header>
         <div className="flex flex-col w-full  lg:p-10 p-5 min-h-0 ">
           <div className="pb-5 ">
-            <h1 className="text-3xl font-bold mb-5 text-gray-800">All Applicants</h1>
+            <h1 className="text-3xl font-bold mb-5 text-gray-800">
+              All Applicants
+            </h1>
           </div>
           <div
             className="flex-1 overflow-y-auto custom-scrollbar pr-2"
