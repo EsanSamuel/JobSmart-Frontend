@@ -7,6 +7,7 @@ import DashboardNav from "@/components/dashboardNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarInset } from "@/components/ui/sidebar";
+import { job } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { CheckCircle, Loader2, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -87,7 +88,7 @@ const Page = () => {
             style={scrollbarStyles as any}
           >
             <div className="space-y-4 overflow-y-auto">
-              {jobs?.map((job, index) => (
+              {jobs?.map((job: job, index: number) => (
                 <div className="" key={index}>
                   <ApplicantsCard job={job} index={index} />
                 </div>

@@ -17,19 +17,9 @@ export interface job {
   createdById: string;
   createdAt: Date;
   updatedAt: Date;
-  Resume: {
-    id: string;
-    embedding: number[];
-    createdAt: Date;
-    fileUrl: string;
-    parsedText: string;
-    userId: string | null;
-    jobId: string | null;
-    matchPercentage: number | null;
-    matchedSkills: string[];
-    missingSkills: string[];
-    summary: string | null;
-  }[];
+  matchScore?: number;
+  createdBy: user;
+  Resume: resume[];
 }
 
 export interface match {
@@ -42,4 +32,41 @@ export interface match {
   missingSkills: string[];
   summary: string;
   resumeId: string | null;
+}
+
+export interface user {
+  username: string;
+  email: string;
+  role: "USER" | "COMPANY";
+  id: string;
+  uniqueName: string | null;
+  profilePicture: string | null;
+  hashedPassword: string | null;
+  headline: string | null;
+  location: string | null;
+  skills: string[];
+  bio: string | null;
+  profileImage: string | null;
+}
+
+export interface resume {
+  id: string;
+  createdAt: Date;
+  embedding: number[];
+  userId: string | null;
+  jobId: string | null;
+  fileUrl: string;
+  parsedText: string;
+  matchPercentage: number | null;
+  matchedSkills: string[];
+  missingSkills: string[];
+  summary: string | null;
+}
+
+export interface bookmark {
+  id: string;
+  jobId: string;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

@@ -30,7 +30,7 @@ import { job } from "@/types";
 import { formatDistance, subDays } from "date-fns";
 
 interface IMobileJobDetails {
-  job: job & { createdBy: any };
+  job: job;
   recommendationPage?: boolean;
 }
 
@@ -124,7 +124,7 @@ const MobileJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
               <Clock className="h-4 w-4 text-blue-600" />
               <span className="">
                 Posted{" "}
-                {formatDistance(subDays(job?.createdAt, 3), new Date(), {
+                {formatDistance(subDays(job?.createdAt, 0), new Date(), {
                   addSuffix: true,
                 })}
               </span>

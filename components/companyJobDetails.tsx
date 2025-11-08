@@ -16,6 +16,7 @@ import {
   Ban,
   Bookmark,
   CircleX,
+  Clock,
   ClosedCaption,
   DollarSign,
   MapPin,
@@ -29,6 +30,7 @@ import api from "@/app/libs/axios";
 import { UserContext } from "@/app/context/userContext";
 import { useQuery } from "@tanstack/react-query";
 import { job } from "@/types";
+import { formatDistance, subDays } from "date-fns";
 
 interface IMobileJobDetails {
   job: job;
@@ -124,6 +126,15 @@ const CompanyJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
             <div className="flex items-center gap-2 text-gray-600">
               <Users className="h-4 w-4 text-pink-400" />
               <span className="">{job?.Resume?.length} applicants</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <Clock className="h-4 w-4 text-blue-600" />
+              <span className="">
+                Posted{" "}
+                {formatDistance(subDays(job?.createdAt,0), new Date(), {
+                  addSuffix: true,
+                })}
+              </span>
             </div>
 
             <div className="flex gap-3 mt-4">

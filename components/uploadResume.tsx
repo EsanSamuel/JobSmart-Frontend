@@ -25,27 +25,10 @@ import "react-circular-progressbar/dist/styles.css";
 import api from "@/app/libs/axios";
 import { UserContext } from "@/app/context/userContext";
 import axios from "axios";
+import { job } from "@/types";
 
 interface IJob {
-  job: {
-    title: string;
-    maxApplicants: number;
-    description: string;
-    skills: string[];
-    location: string | null;
-    jobType: string;
-    salaryRange: string | null;
-    requirements: string[];
-    responsibilities: string[];
-    benefits: string[];
-    id: string;
-    createdAt: Date;
-    updatedAt: Date;
-    company: string | null;
-    isArchived: boolean;
-    embedding: number[];
-    createdById: string;
-  };
+  job: job
 }
 
 const UploadResume = () => {

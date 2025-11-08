@@ -45,15 +45,15 @@ const Page = () => {
   const handleCreateJob = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const skills = job.skills.split(" , ").map((skill) => skill.trim());
+      const skills = job.skills.split("; ").map((skill) => skill.trim());
       const requirements = job.requirements
-        .split(" , ")
+        .split("; ")
         .map((requirement) => requirement.trim());
       const responsibilities = job.responsibilities
-        .split(" , ")
+        .split("; ")
         .map((responsibility) => responsibility.trim());
       const benefits = job.benefits
-        .split(" , ")
+        .split("; ")
         .map((benefit) => benefit.trim());
       console.log(job, skills, requirements, responsibilities, benefits);
 
@@ -234,7 +234,7 @@ const Page = () => {
                   </h2>
                   <p className="text-sm text-gray-600">
                     List the qualifications and skills needed (Separate with
-                    comma)
+                    semicolon ";")
                   </p>
                 </div>
                 <Textarea
@@ -260,7 +260,7 @@ const Page = () => {
                   </h2>
                   <p className="text-sm text-gray-600">
                     Outline the key responsibilities and day-to-day tasks
-                    (Separate with comma)
+                    (Separate with semicolon ";")
                   </p>
                 </div>
                 <Textarea
@@ -285,7 +285,7 @@ const Page = () => {
                     Benefits
                   </h2>
                   <p className="text-sm text-gray-600">
-                    List the benefits of this job (Separate with comma)
+                    List the benefits of this job (Separate with semicolon ";")
                   </p>
                 </div>
                 <Textarea
@@ -310,7 +310,8 @@ const Page = () => {
                     Skills
                   </h2>
                   <p className="text-sm text-gray-600">
-                    List the skills needed of this job (Separate with comma)
+                    List the skills needed of this job (Separate with semicolon
+                    ";")
                   </p>
                 </div>
                 <Textarea

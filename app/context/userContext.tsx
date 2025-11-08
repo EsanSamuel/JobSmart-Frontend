@@ -1,57 +1,16 @@
 "use client";
 import api from "@/app/libs/axios";
-import { job } from "@/types";
+import { bookmark, job, match, resume, user } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface IUser {
-  user: {
-    username: string;
-    email: string;
-    role: "USER" | "COMPANY";
-    id: string;
-    uniqueName: string | null;
-    profilePicture: string | null;
-    hashedPassword: string | null;
-    headline: string | null;
-    location: string | null;
-    skills: string[];
-    bio: string | null;
-    profileImage: string | null;
-  };
+  user: user;
   jobs: job[];
-  bookmarks: {
-    id: string;
-    jobId: string;
-    userId: string;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-  appliedJobs: {
-    id: string;
-    createdAt: Date;
-    embedding: number[];
-    userId: string | null;
-    jobId: string | null;
-    fileUrl: string;
-    parsedText: string;
-    matchPercentage: number | null;
-    matchedSkills: string[];
-    missingSkills: string[];
-    summary: string | null;
-  };
-  matchedJobs: {
-    id: string;
-    matchPercentage: number;
-    matchedSkills: string[];
-    missingSkills: string[];
-    summary: string;
-    createdAt: Date;
-    jobId: string | null;
-    userId: string | null;
-    resumeId: string | null;
-  };
+  bookmarks: bookmark[];
+  appliedJobs: resume;
+  matchedJobs: match;
   AIRecommendedJobs: job[];
   loadingJobs: boolean;
 }
@@ -69,7 +28,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     queryKey: ["user", session?.user.id],
     queryFn: async () => {
       const response = await api.get(`/api/v1/users/${session?.user.id}`);
-      console.log(response.data.data)
+      console.log(response.data.data);
       return response.data.data;
     },
     enabled: !!session?.user?.id,
@@ -137,7 +96,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await api.get(
         `/api/v1/jobs/ai-recommedation/${session?.user?.id}`
       );
-      console.log(response)
+      console.log(response);
       return response.data.data;
     },
   });

@@ -362,7 +362,7 @@ const Home = () => {
                         <span className="font-">
                           Posted{" "}
                           {formatDistance(
-                            subDays(selectedJob.createdAt, 3),
+                            subDays(selectedJob.createdAt, 0),
                             new Date(),
                             {
                               addSuffix: true,

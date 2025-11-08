@@ -32,27 +32,10 @@ import MyJobsCard from "./MyJobsCard";
 import { UserContext } from "@/app/context/userContext";
 import api from "@/app/libs/axios";
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
+import { job } from "@/types";
 
 interface IJob {
-  job: {
-    title: string;
-    maxApplicants: number;
-    description: string;
-    skills: string[];
-    location: string | null;
-    jobType: string;
-    salaryRange: string | null;
-    requirements: string[];
-    responsibilities: string[];
-    benefits: string[];
-    id: string;
-    createdAt: Date;
-    updatedAt: Date;
-    company: string | null;
-    isArchived: boolean;
-    embedding: number[];
-    createdById: string;
-  };
+  job: job
   index: number;
   selectedJob?: any;
   setSelectedJob?: any;
