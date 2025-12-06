@@ -38,7 +38,7 @@ export default function Page() {
     error,
     data: jobs,
   } = useQuery({
-    queryKey: ["jobs"],
+    queryKey: [`jobs:${session?.user?.id}`],
     queryFn: async () => {
       const response = await api.get(
         `/api/v1/jobs/company/${session?.user.id}`

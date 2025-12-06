@@ -70,3 +70,38 @@ export interface bookmark {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface Match {
+  id: string;
+  createdAt: Date;
+  fileUrl: string | null;
+  userId: string | null;
+  jobId: string | null;
+  matchPercentage: number;
+  matchedSkills: string[];
+  missingSkills: string[];
+  summary: string;
+  resumeId: string | null;
+  user: user;
+}
+
+export interface Room {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  isGroup: boolean;
+  userIds: string[];
+  messages: Message[];
+  users: user[];
+}
+
+export interface Message {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  content: string | null;
+  Files: string[];
+  seenIds: string[];
+  senderId: string;
+  roomId: string;
+}

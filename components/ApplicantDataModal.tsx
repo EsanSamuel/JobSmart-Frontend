@@ -1,20 +1,24 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-import { Sparkles, User, Star } from "lucide-react";
+import { Sparkles, User, Star, Mail } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { Button } from "./ui/button";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/app/libs/axios";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { UserContext } from "@/app/context/userContext";
+import { Match } from "@/types";
+import { io, Socket } from "socket.io-client";
 
-const ApplicantDataModal = ({ match, job }: { match: any; job: any }) => {
+const ApplicantDataModal = ({ match, job }: { match: Match; job: any }) => {
+  const { user } = useContext(UserContext) as any;
   const [progress, setProgress] = React.useState(13);
   const [filterResume, setFilterResume] = useState("ALL");
   const [isShortlisted, setIsShortlisted] = useState(false);
@@ -22,6 +26,8 @@ const ApplicantDataModal = ({ match, job }: { match: any; job: any }) => {
   const pathname = usePathname();
   const isApplicantPath = pathname?.includes("/applicants/");
   const isPath = pathname?.includes("/applicants/shortlisted");
+  const socketRef = useRef<Socket>(null);
+  const router = useRouter();
 
   React.useEffect(() => {
     const timer = setTimeout(() => setProgress(66), 500);
@@ -37,6 +43,38 @@ const ApplicantDataModal = ({ match, job }: { match: any; job: any }) => {
       console.error("Error adding to shortlist:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    socketRef.current = io("http://localhost:5000");
+
+    socketRef.current.on("connect", () => {
+      console.log("Connected to server");
+    });
+
+    return () => {
+      socketRef.current?.disconnect();
+    };
+  }, []);
+
+  const handleChatRoom = async () => {
+    try {
+      const room = await api.post(`/api/v1/rooms`, {
+        userId1: user?.id,
+        userId2: match?.userId,
+      });
+
+      socketRef.current?.emit("joinRoom", {
+        userId: user?.id,
+        username: user?.username,
+        roomId: room?.data.data.id,
+      });
+
+      router.push(`room/${room?.data.data.id}`);
+      console.log(room);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -119,28 +157,37 @@ const ApplicantDataModal = ({ match, job }: { match: any; job: any }) => {
       </ScrollArea>
       <div className="flex gap-2 mt-5">
         {isApplicantPath &&
-          pathname !== "/dashboard/applicants/shortlisted" &&
-          !isPath && (
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={handleAddToShortlist}
-              disabled={isShortlisted || isLoading}
-            >
-              <Star
-                className={`h-4 w-4 mr-2 ${
-                  isShortlisted ? "fill-yellow-400 text-yellow-400" : ""
-                }`}
-              />
-              {isShortlisted
-                ? "Shortlisted"
-                : isLoading
-                ? "Adding..."
-                : "Add to Shortlist"}
-            </Button>
-          )}
+        pathname !== "/dashboard/applicants/shortlisted" &&
+        !isPath ? (
+          <Button
+            variant="outline"
+            className="flex-1"
+            onClick={handleAddToShortlist}
+            disabled={isShortlisted || isLoading}
+          >
+            <Star
+              className={`h-4 w-4 mr-2 ${
+                isShortlisted ? "fill-yellow-400 text-yellow-400" : ""
+              }`}
+            />
+            {isShortlisted
+              ? "Shortlisted"
+              : isLoading
+              ? "Adding..."
+              : "Add to Shortlist"}
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            className="flex-1"
+            onClick={handleChatRoom}
+            disabled={isShortlisted || isLoading}
+          >
+            <Mail /> Inbox
+          </Button>
+        )}
         <a
-          href={match?.fileUrl}
+          href={match?.fileUrl!}
           target="_blank"
           rel="noopener noreferrer"
           className="flex-1"

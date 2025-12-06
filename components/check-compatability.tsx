@@ -18,30 +18,12 @@ import "react-circular-progressbar/dist/styles.css";
 import { UserContext } from "@/app/context/userContext";
 import axios from "axios";
 import { ScrollArea } from "./ui/scroll-area";
-import { match } from "@/types";
+import { job, match } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/app/libs/axios";
 
 interface IJob {
-  job: {
-    title: string;
-    maxApplicants: number;
-    description: string;
-    skills: string[];
-    location: string | null;
-    jobType: string;
-    salaryRange: string | null;
-    requirements: string[];
-    responsibilities: string[];
-    benefits: string[];
-    id: string;
-    createdAt: Date;
-    updatedAt: Date;
-    company: string | null;
-    isArchived: boolean;
-    embedding: number[];
-    createdById: string;
-  };
+  job: job
 }
 
 const Compatibility = ({ job }: IJob) => {

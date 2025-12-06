@@ -15,6 +15,7 @@ import { signIn, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import axios from "axios";
 import { FcGoogle } from "react-icons/fc";
+import { Loader2 } from "lucide-react";
 
 export function SignupForm({
   className,
@@ -26,6 +27,8 @@ export function SignupForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading2, setIsLoading2] = useState(false);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -35,6 +38,7 @@ export function SignupForm({
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       if (password !== confirmPassword) {
         console.log("Password does not match!");
@@ -55,14 +59,19 @@ export function SignupForm({
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const LoginWithGoogle = async () => {
+    setIsLoading2(true);
     try {
       await signIn("google");
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading2(false);
     }
   };
   return (
@@ -148,16 +157,40 @@ export function SignupForm({
           <FieldDescription>Please confirm your password.</FieldDescription>
         </Field>
         <Field>
-          <Button type="submit" className="" onClick={handleSignUp}>
-            Create Account
-          </Button>
+          {isLoading ? (
+            <Button
+              type="submit"
+              className="flex items-center-center gap-2"
+              onClick={handleSignUp}
+            >
+              <Loader2 className="h-5 w-5 animate-spin text-gray-400" />{" "}
+              Creating Account...
+            </Button>
+          ) : (
+            <Button type="submit" className="" onClick={handleSignUp}>
+              Create Account
+            </Button>
+          )}
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
-          <Button variant="outline" type="button" onClick={LoginWithGoogle}>
-            <FcGoogle />
-            Sign up with Google
-          </Button>
+          {isLoading2 ? (
+            <Button
+              variant="outline"
+              type="button"
+              className="flex items-center-center gap-2"
+              onClick={LoginWithGoogle}
+            >
+              <FcGoogle />
+              <Loader2 className="h-5 w-5 animate-spin text-gray-400" /> Signing
+              up...
+            </Button>
+          ) : (
+            <Button variant="outline" type="button" onClick={LoginWithGoogle}>
+              <FcGoogle />
+              Login with Google
+            </Button>
+          )}
           <FieldDescription className="px-6 text-center">
             Already have an account? <a href="/login">Sign in</a>
           </FieldDescription>

@@ -6,6 +6,7 @@ import {
   GalleryVerticalEnd,
   Waypoints,
   Menu,
+  Mail,
 } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,9 +14,15 @@ import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
@@ -102,6 +109,18 @@ const Navbar = () => {
                   <p className="text-[12px]">My Jobs</p>
                 </Link>
 
+                <Link href="/room" className="flex gap-2 items-center">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="relative hover:bg-blue-50"
+                    title="Inbox"
+                  >
+                    <Mail className="h-5 w-5 text-gray-600" />
+                  </Button>
+                  <p className="text-[12px]">Messages</p>
+                </Link>
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <div className="flex gap-2 items-center">
@@ -164,10 +183,65 @@ const Navbar = () => {
                   </a>
                 ) : (
                   <div className="flex gap-2 items-center">
-                    <Avatar onClick={() => signOut()}>
-                      <AvatarImage src={user?.profileImage} />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Avatar onClick={() => signOut()}>
+                          <AvatarImage src={user?.profileImage} />
+                          <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56" align="start">
+                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem>
+                            Profile
+                            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            Billing
+                            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            Settings
+                            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            Keyboard shortcuts
+                            <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem>Team</DropdownMenuItem>
+                          <DropdownMenuSub>
+                            <DropdownMenuSubTrigger>
+                              Invite users
+                            </DropdownMenuSubTrigger>
+                            <DropdownMenuPortal>
+                              <DropdownMenuSubContent>
+                                <DropdownMenuItem>Email</DropdownMenuItem>
+                                <DropdownMenuItem>Message</DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>More...</DropdownMenuItem>
+                              </DropdownMenuSubContent>
+                            </DropdownMenuPortal>
+                          </DropdownMenuSub>
+                          <DropdownMenuItem>
+                            New Team
+                            <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>GitHub</DropdownMenuItem>
+                        <DropdownMenuItem>Support</DropdownMenuItem>
+                        <DropdownMenuItem disabled>API</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          Log out
+                          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                     <div>
                       <p className="text-gray-700">{user?.username}</p>
                     </div>
@@ -202,6 +276,17 @@ const Navbar = () => {
               title="Saved Jobs"
             >
               <Bookmark className="h-5 w-5 text-gray-600" />
+            </Button>
+          </Link>
+
+          <Link href="/room">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative hover:bg-blue-50"
+              title="Inbox"
+            >
+              <Mail className="h-5 w-5 text-gray-600" />
             </Button>
           </Link>
 

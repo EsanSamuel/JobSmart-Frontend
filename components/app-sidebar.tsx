@@ -38,6 +38,7 @@ import {
   Clock,
 } from "lucide-react";
 import { UserContext } from "@/app/context/userContext";
+import { user } from "@/types";
 
 const data = {
   user: {
@@ -117,21 +118,21 @@ const data = {
         },
       ],
     },
-    /* {
+    {
       title: "Messages",
       url: "/company/messages",
       icon: MessageSquare,
       items: [
         {
           title: "Inbox",
-          url: "/company/messages",
+          url: "/room",
         },
         {
           title: "Sent",
-          url: "/company/messages/sent",
+          url: "/messages/sent",
         },
       ],
-    },*/
+    },
     {
       title: "Settings",
       url: "/company/settings",
