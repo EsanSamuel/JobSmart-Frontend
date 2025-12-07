@@ -16,6 +16,7 @@ import {
   Banknote,
   ThumbsUp,
   BowArrow,
+  Loader2,
 } from "lucide-react";
 import {
   Select,
@@ -24,10 +25,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import api from "@/app/libs/axios";
 import { UserContext } from "@/app/context/userContext";
+import { useApi } from "@/hooks/useApi";
 
 const Page = () => {
+  const api = useApi();
   const { user } = useContext(UserContext) as any;
   const [job, setJobs] = useState({
     title: "",
@@ -41,9 +43,11 @@ const Page = () => {
     maxApplicants: 0,
     jobType: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleCreateJob = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const skills = job.skills.split("; ").map((skill) => skill.trim());
       const requirements = job.requirements
@@ -73,6 +77,8 @@ const Page = () => {
       console.log(response.data.data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -356,12 +362,19 @@ const Page = () => {
             >
               Save Draft
             </Button>
-            <Button
-              className="px-6 bg-blue-600 hover:bg-blue-700"
-              onClick={handleCreateJob}
-            >
-              Post Job
-            </Button>
+            {loading ? (
+              <Button className="px-6 bg-blue-600 hover:bg-blue-700 flex items-center gap-2">
+                <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+                Posting job...
+              </Button>
+            ) : (
+              <Button
+                className="px-6 bg-blue-600 hover:bg-blue-700"
+                onClick={handleCreateJob}
+              >
+                Post Job
+              </Button>
+            )}
           </div>
         </div>
       </div>

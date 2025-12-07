@@ -1,5 +1,6 @@
 "use client";
-import api from "@/app/libs/axios";
+
+import { useApi } from "@/hooks/useApi";
 import { bookmark, job, match, resume, user } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -18,6 +19,7 @@ interface IUser {
 export const UserContext = createContext<IUser | null>(null);
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
+  const api = useApi();
   const { data: session } = useSession();
 
   const {

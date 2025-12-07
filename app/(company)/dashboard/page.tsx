@@ -1,5 +1,4 @@
 "use client";
-import api from "@/app/libs/axios";
 import { data } from "@/app/libs/dummyData";
 import { AppSidebar } from "@/components/app-sidebar";
 import CompanyJobsCard from "@/components/CompanyJobs";
@@ -20,12 +19,14 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useApi } from "@/hooks/useApi";
 import { useQuery } from "@tanstack/react-query";
 import { Briefcase, CheckCircle, Clock, Loader2, Users } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 export default function Page() {
+  const api = useApi();
   const { data: session } = useSession();
   const [totalApplicants, setTotalApplicants] = useState(0);
   const scrollbarStyles = {

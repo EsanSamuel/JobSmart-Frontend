@@ -10,18 +10,19 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import api from "@/app/libs/axios";
 import { signIn, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import axios from "axios";
 import { FcGoogle } from "react-icons/fc";
 import { Loader2 } from "lucide-react";
+import { useApi } from "@/hooks/useApi";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
   const { data: session, status } = useSession();
+  const api = useApi()
   const [role, setRole] = useState("USER");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");

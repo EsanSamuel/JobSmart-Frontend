@@ -11,13 +11,14 @@ import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { Button } from "./ui/button";
 import { useQuery } from "@tanstack/react-query";
-import api from "@/app/libs/axios";
 import { usePathname, useRouter } from "next/navigation";
 import { UserContext } from "@/app/context/userContext";
 import { Match } from "@/types";
 import { io, Socket } from "socket.io-client";
+import { useApi } from "@/hooks/useApi";
 
 const ApplicantDataModal = ({ match, job }: { match: Match; job: any }) => {
+  const api = useApi();
   const { user } = useContext(UserContext) as any;
   const [progress, setProgress] = React.useState(13);
   const [filterResume, setFilterResume] = useState("ALL");
@@ -71,7 +72,7 @@ const ApplicantDataModal = ({ match, job }: { match: Match; job: any }) => {
         roomId: room?.data.data.id,
       });
 
-      router.push(`room/${room?.data.data.id}`);
+      router.push(`/room/${room?.data.data.id}`);
       console.log(room);
     } catch (error) {
       console.log(error);

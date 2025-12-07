@@ -1,8 +1,11 @@
-import { AuthOptions } from "next-auth";
+import { AuthOptions, getServerSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import api from "./axios";
 import axios from "axios";
+import jwt from "jsonwebtoken";
+import { user } from "@/types";
+
+const BACKEND_URL = "http://localhost:5000";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -29,10 +32,13 @@ export const authOptions: AuthOptions = {
         }
 
         try {
-          const response = await api.post("/api/v1/users/login", {
-            email: credentials.email,
-            password: credentials.password,
-          });
+          const response = await axios.post(
+            `${BACKEND_URL}/api/v1/users/login`,
+            {
+              email: credentials.email,
+              password: credentials.password,
+            }
+          );
 
           const data = response.data.data;
 
@@ -63,7 +69,7 @@ export const authOptions: AuthOptions = {
 
       if (account?.provider === "google") {
         try {
-          await api.post("/api/v1/users/google-oauth", {
+          await axios.post(`${BACKEND_URL}/api/v1/users/google-oauth`, {
             username: user.name,
             email: user.email,
             image: user.image,
@@ -93,23 +99,46 @@ export const authOptions: AuthOptions = {
         token.email = user.email;
         token.name = user.name;
         token.picture = user.image;
+
+        token.accessToken = jwt.sign(
+          {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+          },
+          process.env.JWT_SECRET!,
+          { expiresIn: "7d" }
+        );
       }
 
       if (account?.provider === "google" && profile) {
         try {
-          const response = await api.post("/api/v1/users/google-oauth", {
-            username: profile.name,
-            email: profile.email,
-            image: profile.image,
-            role: "USER",
-          });
+          const response = await axios.post(
+            `${BACKEND_URL}/api/v1/users/google-oauth`,
+            {
+              username: profile.name,
+              email: profile.email,
+              image: profile.image,
+              role: "USER",
+            }
+          );
 
-          const data = response.data.data;
+          const data = response.data.data as user;
 
           token.id = data.id.toString();
           token.email = data.email;
           token.name = data.username;
           token.picture = data.profileImage;
+
+          token.accessToken = jwt.sign(
+            {
+              id: data.id.toString(),
+              email: data.email,
+              name: data.username,
+            },
+            process.env.JWT_SECRET!,
+            { expiresIn: "7d" }
+          );
         } catch (error) {
           console.error("Failed to get user from backend:", error);
         }
@@ -124,6 +153,7 @@ export const authOptions: AuthOptions = {
         session.user.email = token.email as string;
         session.user.name = token.name as string;
         session.user.image = token.picture as string;
+        session.user.accessToken = token.accessToken as string;
       }
 
       return session;
@@ -140,3 +170,7 @@ export const authOptions: AuthOptions = {
     error: "/auth/error",
   },
 };
+
+export default async function getSession() {
+  return await getServerSession(authOptions);
+}

@@ -36,13 +36,14 @@ import JobCard from "./JobCard";
 import MyJobsCard from "./MyJobsCard";
 import { useSession } from "next-auth/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import api from "@/app/libs/axios";
 import { UserContext } from "@/app/context/userContext";
 import { job } from "@/types";
 import FilterModal from "./filterModal";
 import { format, formatDistance, formatRelative, subDays } from "date-fns";
+import { useApi } from "@/hooks/useApi";
 
 const Home = () => {
+  const api = useApi();
   const { data: session } = useSession();
   const { user, bookmarks } = useContext(UserContext) as any;
   const [selectedJob, setSelectedJob] = useState<
