@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { FormEvent, useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
-import { redirect, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { Loader2 } from "lucide-react";
 import { useApi } from "@/hooks/useApi";
@@ -29,6 +29,7 @@ export function PasswordResetForm({
   const [isLoading2, setIsLoading2] = useState(false);
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const router = useRouter();
 
   useEffect(() => {
     if (session?.user) {
@@ -54,6 +55,7 @@ export function PasswordResetForm({
       console.log(response);
       if (response) {
         alert("Password changed!");
+        router.push("/login");
       }
     } catch (error) {
       console.log(error);

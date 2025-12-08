@@ -22,13 +22,13 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import api from "@/app/libs/axios";
 import { UserContext } from "@/app/context/userContext";
 import axios from "axios";
 import { job } from "@/types";
+import { useApi } from "@/hooks/useApi";
 
 interface IJob {
-  job: job
+  job: job;
 }
 
 const UploadResume = () => {
@@ -125,8 +125,6 @@ const UploadResume = () => {
             Upload
           </Button>
         </div>
-
-
       </div>
     </DialogContent>
   );

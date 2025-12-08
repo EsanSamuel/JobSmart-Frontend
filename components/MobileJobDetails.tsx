@@ -23,11 +23,11 @@ import {
 } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 import Apply from "./Apply";
-import api from "@/app/libs/axios";
 import { UserContext } from "@/app/context/userContext";
 import { useQuery } from "@tanstack/react-query";
 import { job } from "@/types";
 import { formatDistance, subDays } from "date-fns";
+import { useApi } from "@/hooks/useApi";
 
 interface IMobileJobDetails {
   job: job;
@@ -35,6 +35,7 @@ interface IMobileJobDetails {
 }
 
 const MobileJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
+  const api = useApi()
   const { user } = useContext(UserContext) as any;
   const {
     isPending: loadingResume,

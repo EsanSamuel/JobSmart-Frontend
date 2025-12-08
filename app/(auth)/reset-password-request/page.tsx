@@ -1,5 +1,5 @@
 "use client";
-import { GalleryVerticalEnd } from "lucide-react";
+import { GalleryVerticalEnd, Loader2 } from "lucide-react";
 
 import { SignupForm } from "@/components/signup-form";
 import { Input } from "@/components/ui/input";
@@ -10,16 +10,24 @@ import { useApi } from "@/hooks/useApi";
 export default function PasswordResetRequestPage() {
   const api = useApi();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [verificationMessage, setVerificationMessage] = useState(false);
 
   const handleRequest = async (e: React.FormEvent) => {
     e.preventDefault();
-    const request = await api.post("/api/v1/users/reset-password-request", {
-      email,
-    });
-    console.log(request.data.data);
-    if (request) {
-      alert("Mail sent!");
+    setLoading(true);
+    try {
+      const request = await api.post("/api/v1/users/reset-password-request", {
+        email,
+      });
+      console.log(request.data.data);
+      if (request) {
+        setVerificationMessage(true);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -38,15 +46,34 @@ export default function PasswordResetRequestPage() {
             <div className="flex flex-col items-center gap-4">
               <div className="flex flex-col items-center gap-1 text-center">
                 <h1 className="text-2xl font-bold">Request Password Reset</h1>
+                <p className="text-muted-foreground text-sm text-balance">
+                  Enter your email to reset your password.
+                </p>
               </div>
               <Input
                 className="border border-gray-300"
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter Email"
               />
-              <Button className="w-full" onClick={handleRequest}>
-                Request password change
-              </Button>
+              {loading ? (
+                <Button
+                  className="w-full flex gap-3 items-center"
+                  onClick={handleRequest}
+                >
+                  <Loader2 className="h-5 w-5 animate-spin text-gray-400" />{" "}
+                  Requesting password change...
+                </Button>
+              ) : (
+                <Button className="w-full" onClick={handleRequest}>
+                  Request password change
+                </Button>
+              )}
+
+              {verificationMessage && (
+                <div className="w-full border-green-500 border bg-green-200 rounded-2xl px-5 py-3 text-sm">
+                  <p>Reset link sent to {email}. Check your inbox</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -40,10 +40,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useQuery } from "@tanstack/react-query";
-import api from "@/app/libs/axios";
+import { useQuery } from "@tanstack/react-query"
 import { UserContext } from "@/app/context/userContext";
 import { job } from "@/types";
+import { useApi } from "@/hooks/useApi";
 
 interface Ijobs {
   job: job & { createdBy: any };
@@ -53,6 +53,7 @@ interface Ijobs {
 }
 
 const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
+  const api = useApi()
   const { user } = useContext(UserContext) as any;
   const {
     isPending: loadingResume,

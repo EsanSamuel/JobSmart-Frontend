@@ -21,12 +21,12 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import api from "@/app/libs/axios";
-import { Room, user } from "@/types";
+import { Message, Room, user } from "@/types";
 import { UserContext } from "@/app/context/userContext";
 import { io } from "socket.io-client";
 import { Socket } from "socket.io-client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useApi } from "@/hooks/useApi";
 
 // This is sample data
 const data = {
@@ -157,25 +157,17 @@ export function MessageSidebar({
   // Note: I'm using state to show active item.
   // IRL you should use the url/router.
   const { user } = React.useContext(UserContext) as any;
+  const api = useApi();
   const { data: session } = useSession();
   const [activeItem, setActiveItem] = React.useState(data.navMain[0]);
   const [mails, setMails] = React.useState(data.mails);
   const [searchChat, setSearchChat] = React.useState("");
+  const [messages, setMessages] = React.useState<Message[]>([]);
   const { setOpen } = useSidebar();
   const socketRef = React.useRef<Socket | null>(null);
   const router = useRouter();
-
-  React.useEffect(() => {
-    socketRef.current = io("http://localhost:5000");
-
-    socketRef.current.on("connect", () => {
-      console.log("Connected to server");
-    });
-
-    return () => {
-      socketRef.current?.disconnect();
-    };
-  }, []);
+  const pathname = usePathname();
+  const roomId = pathname.split("/room/")[1];
 
   const {
     isPending,
@@ -190,8 +182,31 @@ export function MessageSidebar({
     },
   });
 
+  React.useEffect(() => {
+    socketRef.current = io("http://localhost:5000");
+
+    socketRef.current?.emit("joinRoom", {
+      userId: user?.id,
+      username: user?.username,
+      roomId: roomId,
+    });
+
+    socketRef.current.on("connect", () => {
+      console.log("Connected to server");
+    });
+
+    socketRef.current.on("newMessages", (msg: Message) => {
+      console.log("last msg:", msg);
+      setMessages((prev) => [...prev, msg]);
+    });
+
+    return () => {
+      socketRef.current?.disconnect();
+    };
+  }, []);
+
   const filterRooms = (search: string) => {
-    if (!search) return rooms; 
+    if (!search) return rooms;
 
     return rooms?.filter((room: Room) =>
       room.users?.some((user: user) =>
@@ -317,12 +332,10 @@ export function MessageSidebar({
                     <span>{roomName(index)}</span>{" "}
                     {/*<span className="ml-auto text-xs">{room.id}</span>*/}
                   </div>
-                  <span className="font-medium text-xs">
-                    {room?.messages[room.messages.length - 1]?.content}
+
+                  <span className="line-clamp-2 w-[260px] text-xs whitespace-break-spaces">
+                    {room.messages[room.messages.length - 1]?.content}
                   </span>
-                  {/*<span className="line-clamp-2 w-[260px] text-xs whitespace-break-spaces">
-                    {mail.teaser}
-                  </span>*/}
                 </a>
               ))}
             </SidebarGroupContent>

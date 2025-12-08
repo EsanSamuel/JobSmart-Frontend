@@ -1,5 +1,4 @@
 "use client";
-import api from "@/app/libs/axios";
 import { applicants, data } from "@/app/libs/dummyData";
 import ApplicantsCard from "@/components/applicantsCard";
 import CompanyJobsCard from "@/components/CompanyJobs";
@@ -16,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SidebarInset } from "@/components/ui/sidebar";
+import { useApi } from "@/hooks/useApi";
 import { useQuery } from "@tanstack/react-query";
 import { CheckCircle, Loader2, Search } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -23,6 +23,7 @@ import React, { useMemo, useState } from "react";
 
 const Page = () => {
   const { id } = useParams();
+    const api = useApi()
   const [progress, setProgress] = React.useState(13);
   const [filterResume, setFilterResume] = useState("ALL");
 

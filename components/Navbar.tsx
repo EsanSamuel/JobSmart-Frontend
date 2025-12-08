@@ -30,7 +30,6 @@ import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { UserContext } from "@/app/context/userContext";
 import { useQuery } from "@tanstack/react-query";
-import api from "@/app/libs/axios";
 import { redirect } from "next/navigation";
 import {
   Sheet,

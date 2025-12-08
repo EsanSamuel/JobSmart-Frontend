@@ -1,22 +1,26 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { Send, Loader2, ArrowLeft, MoreVertical } from "lucide-react";
-import api from "@/app/libs/axios";
 import { Message, user } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { io, Socket } from "socket.io-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useApi } from "@/hooks/useApi";
 
 export default function ChatRoom() {
+  const api = useApi();
   const { roomId } = useParams();
   const { data: session } = useSession();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [typingUser, setTypingUser] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<Socket | null>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const {
     isPending,
@@ -78,6 +82,16 @@ export default function ChatRoom() {
       console.error("Socket error:", error);
     });
 
+    socketRef.current.on("userTyping", ({ username }) => {
+      setTypingUser(username);
+      setIsTyping(true);
+    });
+
+    socketRef.current.on("userStoppedTyping", () => {
+      setIsTyping(false);
+      setTypingUser("");
+    });
+
     return () => {
       console.log("Disconnecting socket...");
       socketRef.current?.disconnect();
@@ -119,6 +133,26 @@ export default function ChatRoom() {
 
     setNewMessage("");
     setIsSending(false);
+  };
+
+  const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewMessage(e.target.value);
+
+    if (!typingTimeoutRef.current) {
+      socketRef.current?.emit("typing", {
+        username: session?.user?.name,
+        roomId,
+      });
+    }
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    typingTimeoutRef.current = setTimeout(() => {
+      socketRef.current?.emit("stopTyping", { roomId });
+      typingTimeoutRef.current = null;
+    }, 3000);
   };
 
   if (isPending) {
@@ -224,6 +258,12 @@ export default function ChatRoom() {
             );
           })
         )}
+      {isTyping && typingUser !== session?.user?.name && (
+        <div className="px-4 py-2 text-sm text-gray-600 bg-gray-100">
+          <span className="italic">{typingUser} is typing...</span>
+        </div>
+      )}
+
         <div ref={messagesEndRef} />
       </div>
 
@@ -232,7 +272,7 @@ export default function ChatRoom() {
           <input
             type="text"
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={handleTyping}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -246,7 +286,7 @@ export default function ChatRoom() {
           <button
             onClick={handleSend}
             disabled={!newMessage.trim() || isSending}
-            className="w-12 h-12 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors shadow-md shrink-0"
+            className="w-12 h-12 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors shadow-md shrink-0"
           >
             {isSending ? (
               <Loader2 className="w-5 h-5 text-white animate-spin" />

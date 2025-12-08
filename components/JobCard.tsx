@@ -30,9 +30,9 @@ import { Badge } from "./ui/badge";
 import Apply from "./Apply";
 import MyJobsCard from "./MyJobsCard";
 import { UserContext } from "@/app/context/userContext";
-import api from "@/app/libs/axios";
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { job } from "@/types";
+import { useApi } from "@/hooks/useApi";
 
 interface IJob {
   job: job
@@ -44,6 +44,7 @@ interface IJob {
 const JobCard = ({ job, index, selectedJob, setSelectedJob }: IJob) => {
   const { user, bookmarks } = useContext(UserContext) as any;
   const queryClient = useQueryClient();
+  const api = useApi()
 
   const {
     isPending: loadingBookmarks,

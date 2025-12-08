@@ -22,9 +22,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
-import api from "@/app/libs/axios";
 import { Dialog, DialogTrigger } from "./ui/dialog";
 import ApplicantDataModal from "./ApplicantDataModal";
+import { useApi } from "@/hooks/useApi";
 
 interface Ijobs {
   job: any;
@@ -33,6 +33,7 @@ interface Ijobs {
 }
 
 export default function ApplicantsCard({ job, index, shortlisted }: Ijobs) {
+  const api = useApi();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = React.useState(false);
   const router = useRouter();
@@ -183,10 +184,7 @@ export default function ApplicantsCard({ job, index, shortlisted }: Ijobs) {
                         <span className="lg:block md:block hidden">View</span>
                       </Button>
                     </DialogTrigger>
-                    <ApplicantDataModal
-                      match={applicant}
-                      job={job}
-                    />
+                    <ApplicantDataModal match={applicant} job={job} />
                   </Dialog>
                 </div>
               </div>

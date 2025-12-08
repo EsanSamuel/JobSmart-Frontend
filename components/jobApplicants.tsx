@@ -22,7 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import ApplicantDataModal from "./ApplicantDataModal";
 import { useQuery } from "@tanstack/react-query";
-import api from "@/app/libs/axios";
+import { useApi } from "@/hooks/useApi";
 
 interface Ijobs {
   job: {
@@ -77,6 +77,7 @@ interface Ijobs {
 export default function Applicants({ job, jobResumes }: Ijobs) {
   const [isOpen, setIsOpen] = React.useState(true);
   const totalApplicants = jobResumes?.length || 0;
+  const api = useApi()
 
   const applicantsMinusFirst = jobResumes;
 

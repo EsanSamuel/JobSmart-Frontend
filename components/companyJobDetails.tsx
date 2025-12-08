@@ -26,11 +26,11 @@ import {
 } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 import Apply from "./Apply";
-import api from "@/app/libs/axios";
 import { UserContext } from "@/app/context/userContext";
 import { useQuery } from "@tanstack/react-query";
 import { job } from "@/types";
 import { formatDistance, subDays } from "date-fns";
+import { useApi } from "@/hooks/useApi";
 
 interface IMobileJobDetails {
   job: job;
@@ -38,6 +38,7 @@ interface IMobileJobDetails {
 }
 
 const CompanyJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
+  const api = useApi();
   const { user } = useContext(UserContext) as any;
   const {
     isPending: loadingResume,
@@ -47,21 +48,24 @@ const CompanyJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
     queryKey: ["resumes", job?.id],
     queryFn: async () => {
       const response = await api.get(`/api/v1/jobs/resume/${job?.id}`);
+      if (!response) {
+        return [];
+      }
       console.log("Applied", response.data.data);
       return response.data.data.result;
     },
   });
 
   const hasApplied = useMemo(() => {
-    const resume = resumes?.map((resume: any) => resume.user.id);
-    return resume?.includes(user.id);
+    const resume = resumes?.map((resume: any) => resume?.user?.id);
+    return resume?.includes(user?.id);
   }, [resumes]);
   const scrollbarStyles = {
     scrollbarWidth: "thin",
     scrollbarColor: "#cbd5e1 transparent",
   };
   const handleBookmark = async () => {
-    if (!job.id) {
+    if (!job?.id) {
       return null;
     }
     try {
@@ -111,9 +115,9 @@ const CompanyJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
       >
         <div className="p-6">
           <div className="flex flex-col gap-3 mb-6">
-            <h1 className="font-bold text-2xl text-gray-800">{job.title}</h1>
+            <h1 className="font-bold text-2xl text-gray-800">{job?.title}</h1>
             <div className="flex items-center gap-2 text-gray-600">
-              <span className="font-medium">{job.company}</span>
+              <span className="font-medium">{job?.company}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
               <MapPin className="h-4 w-4 text-red-500" />
@@ -121,7 +125,7 @@ const CompanyJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
             </div>
             <div className="flex items-center gap-2 text-gray-600">
               <DollarSign className="h-4 w-4 text-green-600" />
-              <span className="font-semibold">{job.salaryRange}</span>
+              <span className="font-semibold">{job?.salaryRange}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
               <Users className="h-4 w-4 text-pink-400" />
@@ -131,7 +135,7 @@ const CompanyJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
               <Clock className="h-4 w-4 text-blue-600" />
               <span className="">
                 Posted{" "}
-                {formatDistance(subDays(job?.createdAt,0), new Date(), {
+                {formatDistance(subDays(job?.createdAt, 0), new Date(), {
                   addSuffix: true,
                 })}
               </span>
@@ -172,7 +176,7 @@ const CompanyJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
               Job description
             </h2>
             <p className="text-gray-600 text-[15px] leading-relaxed">
-              {job.description}
+              {job?.description}
             </p>
 
             <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
@@ -181,7 +185,7 @@ const CompanyJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
               </h3>
 
               <ul className="space-y-2 text-gray-600 text-sm">
-                {job.responsibilities.map((responsibility: any) => (
+                {job?.responsibilities.map((responsibility: any) => (
                   <li>• {responsibility}</li>
                 ))}
               </ul>
@@ -203,7 +207,7 @@ const CompanyJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
               Required skills
             </h2>
             <div className="flex flex-wrap gap-2">
-              {job.skills.map((skill: any) => (
+              {job?.skills.map((skill: any) => (
                 <span
                   key={skill}
                   className="px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium hover:bg-blue-200 transition-colors"
@@ -217,7 +221,7 @@ const CompanyJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
           <div className="border-t pt-6 mb-6">
             <h2 className="font-bold text-2xl text-gray-800 mb-4">Benefits</h2>
             <div className="grid grid-cols-2 gap-3">
-              {job.benefits?.map((benefit: any) => (
+              {job?.benefits?.map((benefit: any) => (
                 <div className="flex items-start gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
                   <span className="text-gray-600 text-sm">{benefit}</span>

@@ -38,10 +38,15 @@ export function LoginForm({
       if (!email && !password) {
         return null;
       }
-      await signIn("credentials", {
+      const res = await signIn("credentials", {
+        redirect: false,
         email,
         password,
       });
+      if (res?.error) {
+        console.log(res.error)
+        alert(res.error);
+      }
     } catch (error) {
       console.log(error);
     } finally {

@@ -20,13 +20,14 @@ import axios from "axios";
 import { ScrollArea } from "./ui/scroll-area";
 import { job, match } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import api from "@/app/libs/axios";
+import { useApi } from "@/hooks/useApi";
 
 interface IJob {
   job: job
 }
 
 const Compatibility = ({ job }: IJob) => {
+  const api = useApi()
   const { user } = useContext(UserContext) as any;
   const [file, setFile] = useState<File | null>();
   const [isMatched, setIsMatched] = useState(false);

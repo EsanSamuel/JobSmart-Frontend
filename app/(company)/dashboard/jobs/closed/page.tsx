@@ -1,11 +1,11 @@
 "use client";
-import api from "@/app/libs/axios";
 import { data } from "@/app/libs/dummyData";
 import CompanyJobsCard from "@/components/CompanyJobs";
 import DashboardNav from "@/components/dashboardNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarInset } from "@/components/ui/sidebar";
+import { useApi } from "@/hooks/useApi";
 import { job } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { CheckCircle, Search } from "lucide-react";
@@ -13,6 +13,7 @@ import { useSession } from "next-auth/react";
 import React from "react";
 
 const Page = () => {
+  const api = useApi()
   const { data: session } = useSession();
   const scrollbarStyles = {
     scrollbarWidth: "thin",

@@ -22,7 +22,7 @@ export function SignupForm({
   ...props
 }: React.ComponentProps<"form">) {
   const { data: session, status } = useSession();
-  const api = useApi()
+  const api = useApi();
   const [role, setRole] = useState("USER");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -30,6 +30,7 @@ export function SignupForm({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoading2, setIsLoading2] = useState(false);
+  const [verificationMessage, setVerificationMessage] = useState(false);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -53,10 +54,7 @@ export function SignupForm({
       });
       console.log(response);
       if (response) {
-        signIn("credentials", {
-          email,
-          password,
-        });
+        setVerificationMessage(true);
       }
     } catch (error) {
       console.log(error);
@@ -157,6 +155,11 @@ export function SignupForm({
           />
           <FieldDescription>Please confirm your password.</FieldDescription>
         </Field>
+        {verificationMessage && (
+          <div className="w-full border-green-500 border bg-green-200 rounded-2xl px-5 py-3 text-sm">
+            <p>Verification email sent to {email}. Check your inbox</p>
+          </div>
+        )}
         <Field>
           {isLoading ? (
             <Button
