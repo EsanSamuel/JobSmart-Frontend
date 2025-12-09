@@ -310,19 +310,63 @@ export default function ChatRoom() {
                           : "bg-white text-gray-900 rounded-bl-sm shadow-sm"
                       }`}
                     >
-                      <p className="text-sm leading-relaxed">
-                        {message.content}
-                        {message.Files.map((url, idx) => (
-                          <Image
-                            key={idx}
-                            src={url}
-                            width={200}
-                            height={200}
-                            alt={url}
-                            className="w-30 h-20 rounded-2xl"
-                          />
-                        ))}
-                      </p>
+                      <div className="space-y-2">
+                        {/* Images Grid */}
+                        {message.Files && message.Files.length > 0 && (
+                          <div
+                            className={`grid gap-2 ${
+                              message.Files.length === 1
+                                ? "grid-cols-1"
+                                : message.Files.length === 2
+                                ? "grid-cols-2"
+                                : "grid-cols-2"
+                            }`}
+                          >
+                            {message.Files.map((url, idx) => (
+                              <div
+                                key={idx}
+                                className="relative overflow-hidden rounded-lg"
+                              >
+                                {url.endsWith(".jpg") ||
+                                url.endsWith(".jpeg") ||
+                                url.endsWith(".png") ? (
+                                  <img
+                                    src={url}
+                                    alt={`attachment-${idx}`}
+                                    className="w-full max-w-[200px] h-32 object-cover hover:scale-105 transition-transform cursor-pointer"
+                                    onClick={() => window.open(url, "_blank")}
+                                  />
+                                ) : url.endsWith(".pdf") ? (
+                                  <a href={url}>
+                                    <iframe
+                                      src={url}
+                                      //alt={`attachment-${idx}`}
+                                      className="w-full max-w-[200px] h-32 object-cover hover:scale-105 transition-transform cursor-pointer"
+                                      onClick={() => window.open(url, "_blank")}
+                                    />
+                                  </a>
+                                ) : url.endsWith(".mp4") ? (
+                                  <video
+                                    src={url}
+                                    //alt={`attachment-${idx}`}
+                                    className="w-full h-32 object-cover hover:scale-105 transition-transform cursor-pointer"
+                                    onClick={() => window.open(url, "_blank")}
+                                  />
+                                ) : (
+                                  <></>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Message Text */}
+                        {message.content && (
+                          <p className="text-sm leading-relaxed">
+                            {message.content}
+                          </p>
+                        )}
+                      </div>
 
                       {isOwn && (
                         <button

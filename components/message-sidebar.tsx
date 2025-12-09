@@ -311,7 +311,7 @@ export function MessageSidebar({
           </SidebarGroup>
         </SidebarContent>
         <SidebarFooter>
-          <NavUser user={data.user as any} />
+          <NavUser user={user} />
         </SidebarFooter>
       </Sidebar>
 
