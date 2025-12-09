@@ -60,7 +60,7 @@ export default function ChatRoom() {
     if (!session?.user?.id || !roomId) return;
 
     console.log("Initializing socket connection...");
-    socketRef.current = io("http://localhost:5000", {
+    socketRef.current = io("https://jobsmart-backend.onrender.com", {
       transports: ["websocket", "polling"],
     });
 

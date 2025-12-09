@@ -194,7 +194,7 @@ export function MessageSidebar({
   });
 
   React.useEffect(() => {
-    socketRef.current = io("http://localhost:5000");
+    socketRef.current = io("https://jobsmart-backend.onrender.com");
 
     socketRef.current?.emit("joinRoom", {
       userId: user?.id,
