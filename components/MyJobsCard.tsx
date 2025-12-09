@@ -86,7 +86,7 @@ const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
               src="https://logo.clearbit.com/flutterwave.com"
               width={100}
               height={100}
-              className="w-12 h-12 rounded-xl"
+              className="xl:w-12 xl:h-12 h-8 w-8 rounded-xl"
               alt=""
             />
 

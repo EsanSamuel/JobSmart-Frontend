@@ -96,7 +96,7 @@ const JobCard = ({ job, index, selectedJob, setSelectedJob }: IJob) => {
       key={index}
       className={`border hover:shadow-lg transition-all duration-200 w-full rounded-2xl cursor-pointer ${
         selectedJob.title === job.title
-          ? "border-blue-500 bg-blue-50 shadow-md"
+          ? "border-blue-500 shadow-md"
           : "border-gray-300 bg-[#f9f9fb]"
       }`}
       onClick={() => setSelectedJob(job)}
