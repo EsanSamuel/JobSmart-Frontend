@@ -73,7 +73,7 @@ const Compatibility = ({ job }: IJob) => {
     }
 
     const response = await axios.post(
-      `http://localhost:5000/api/v1/match/${job.id}`,
+      `https://jobsmart-backend.onrender.com/api/v1/match/${job.id}`,
       formData,
       {
         headers: {
