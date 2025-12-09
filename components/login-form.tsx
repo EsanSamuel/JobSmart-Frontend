@@ -80,7 +80,7 @@ export function LoginForm({
             type="email"
             placeholder="m@example.com"
             required
-            className="border border-gray-300"
+            className=""
             onChange={(e) => setEmail(e.target.value)}
           />
         </Field>
@@ -98,7 +98,7 @@ export function LoginForm({
             id="password"
             type="password"
             required
-            className="border border-gray-300"
+            className=""
             onChange={(e) => setPassword(e.target.value)}
           />
         </Field>

@@ -8,7 +8,7 @@ export function useApi() {
 
   const api = useMemo(() => {
     const instance = axios.create({
-      baseURL: "http://localhost:5000",
+      baseURL: "https://jobsmart-backend.onrender.com",
       headers: {
         "Content-Type": "application/json",
       },

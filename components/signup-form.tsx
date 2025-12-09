@@ -86,7 +86,7 @@ export function SignupForm({
           <Button
             variant="outline"
             type="button"
-            className={`border-gray-300 ${
+            className={` ${
               role === "USER" && "border-blue-400"
             }`}
             onClick={() => setRole("USER")}
@@ -96,7 +96,7 @@ export function SignupForm({
           <Button
             variant="outline"
             type="button"
-            className={`border-gray-300 ${
+            className={` ${
               role === "COMPANY" && "border-blue-400"
             }`}
             onClick={() => setRole("COMPANY")}
@@ -113,7 +113,7 @@ export function SignupForm({
             type="text"
             placeholder="John Doe"
             required
-            className="border border-gray-300"
+            className=""
             onChange={(e) => setUsername(e.target.value)}
           />
         </Field>
@@ -127,7 +127,7 @@ export function SignupForm({
             type="email"
             placeholder="m@example.com"
             required
-            className="border border-gray-300"
+            className=""
             onChange={(e) => setEmail(e.target.value)}
           />
         </Field>
@@ -137,7 +137,7 @@ export function SignupForm({
             id="password"
             type="password"
             required
-            className="border border-gray-300"
+            className=""
             onChange={(e) => setPassword(e.target.value)}
           />
           <FieldDescription>
@@ -150,7 +150,7 @@ export function SignupForm({
             id="confirm-password"
             type="password"
             required
-            className="border border-gray-300"
+            className=""
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <FieldDescription>Please confirm your password.</FieldDescription>

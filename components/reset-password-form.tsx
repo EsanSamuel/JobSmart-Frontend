@@ -79,7 +79,7 @@ export function PasswordResetForm({
             id="password"
             type="password"
             required
-            className="border border-gray-300"
+            className=""
             onChange={(e) => setPassword(e.target.value)}
           />
         </Field>
@@ -90,7 +90,7 @@ export function PasswordResetForm({
             id="confirmPassword"
             type="password"
             required
-            className="border border-gray-300"
+            className=""
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </Field>

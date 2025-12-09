@@ -38,14 +38,14 @@ export default function RootLayout({
         <Provider>
           <QueryProvider>
             <UserProvider>
-              <ThemeProvider
+              {/*<ThemeProvider
                 attribute="class"
                 defaultTheme="system"
                 enableSystem
                 disableTransitionOnChange
-              >
-                {children}
-              </ThemeProvider>
+              >*/}
+              {children}
+              {/*</ThemeProvider>*/}
             </UserProvider>
           </QueryProvider>
         </Provider>

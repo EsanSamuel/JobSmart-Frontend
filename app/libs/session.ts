@@ -5,7 +5,7 @@ import axios from "axios";
 import jwt from "jsonwebtoken";
 import { user } from "@/types";
 
-const BACKEND_URL = "http://localhost:5000";
+const BACKEND_URL = "https://jobsmart-backend.onrender.com";
 
 export const authOptions: AuthOptions = {
   providers: [
