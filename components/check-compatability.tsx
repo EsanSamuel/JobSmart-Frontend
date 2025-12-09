@@ -1,7 +1,14 @@
 "use client";
 import React, { useContext, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Upload, FileText, Sparkles, User, CheckCircle2 } from "lucide-react";
+import {
+  Upload,
+  FileText,
+  Sparkles,
+  User,
+  CheckCircle2,
+  Loader2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -23,16 +30,17 @@ import { useQuery } from "@tanstack/react-query";
 import { useApi } from "@/hooks/useApi";
 
 interface IJob {
-  job: job
+  job: job;
 }
 
 const Compatibility = ({ job }: IJob) => {
-  const api = useApi()
+  const api = useApi();
   const { user } = useContext(UserContext) as any;
   const [file, setFile] = useState<File | null>();
   const [isMatched, setIsMatched] = useState(false);
   const [match, setMatch] = useState<match>();
   const [progress, setProgress] = React.useState(13);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     isPending: loadingResume,
@@ -57,6 +65,7 @@ const Compatibility = ({ job }: IJob) => {
       return null;
     }
 
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("authId", user.id);
     if (file) {
@@ -75,6 +84,7 @@ const Compatibility = ({ job }: IJob) => {
     setIsMatched(true);
     setMatch(response.data.data);
     console.log(response.data.data);
+    setIsLoading(false);
   };
 
   const submitResume = async () => {
@@ -196,14 +206,24 @@ const Compatibility = ({ job }: IJob) => {
                 </label>
               </div>
 
-              <Button
-                className="w-full h-11 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
-                disabled={!file}
-                onClick={matchResume}
-              >
-                <Sparkles className="h-4 w-4 mr-2" />
-                Analyze with AI
-              </Button>
+              {isLoading ? (
+                <Button
+                  className="w-full h-11 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                  disabled={isLoading}
+                >
+                  <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+                  Analyzing...
+                </Button>
+              ) : (
+                <Button
+                  className="w-full h-11 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                  disabled={!file}
+                  onClick={matchResume}
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Analyze with AI
+                </Button>
+              )}
             </div>
 
             <div className="relative">
