@@ -2,7 +2,7 @@
 import { useApi } from "@/hooks/useApi";
 import { Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 export default function VerifyPage() {
   const api = useApi();
@@ -24,7 +24,7 @@ export default function VerifyPage() {
         const res = await api.post(`/api/v1/users/verify-email`, {
           token,
         });
-        console.log(res)
+        console.log(res);
         if (res) {
           setStatus("Email verified! You can now log in.");
           router.push("/login");
@@ -42,14 +42,16 @@ export default function VerifyPage() {
   }, [token]);
 
   return (
-    <div className="h-screen flex items-center justify-center">
-      {verifyingEmail && (
-        <p className="flex gap-2 items-center">
-          <Loader2 className="h-5 w-5 animate-spin text-gray-400" /> Verifying
-          Email...
-        </p>
-      )}
-      {status}
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <div className="h-screen flex items-center justify-center">
+        {verifyingEmail && (
+          <p className="flex gap-2 items-center">
+            <Loader2 className="h-5 w-5 animate-spin text-gray-400" /> Verifying
+            Email...
+          </p>
+        )}
+        {status}
+      </div>
+    </Suspense>
   );
 }
