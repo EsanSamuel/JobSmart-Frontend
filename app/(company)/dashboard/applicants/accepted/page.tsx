@@ -1,5 +1,6 @@
 "use client";
-import { data } from "@/app/libs/dummyData";
+import { applicants, data } from "@/app/libs/dummyData";
+import ApplicantsCard from "@/components/applicantsCard";
 import CompanyJobsCard from "@/components/CompanyJobs";
 import DashboardNav from "@/components/dashboardNav";
 import { Button } from "@/components/ui/button";
@@ -10,12 +11,11 @@ import { job } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { CheckCircle, Loader2, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Page = () => {
-  const api = useApi();
   const { data: session } = useSession();
-  const [search, setSearch] = useState("");
+  const api = useApi();
   const scrollbarStyles = {
     scrollbarWidth: "thin",
     scrollbarColor: "#cbd5e1 transparent",
@@ -36,31 +36,12 @@ const Page = () => {
     enabled: !!session?.user?.id,
   });
 
-  const filterJobs = () => {
-    if (!search.trim()) {
-      return jobs?.filter((job: any) => job.isClosed === true);
-    }
-
-    const matchSearch = (job: job) => {
-      return [
-        job.title.toLowerCase(),
-        job.jobType.toLowerCase(),
-        job.description.toLowerCase(),
-      ].some((field) => field.includes(search));
-    };
-
-    return jobs.filter(matchSearch);
-  };
-
-  const closedJobs = () =>
-    filterJobs()?.filter((job: any) => job.isClosed === true);
-
   if (isPending) {
     return (
       <div className="h-screen flex items-center justify-center py-12">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-          <p className="text-gray-500">Loading closed jobs...</p>
+          <p className="text-gray-500">Loading applicants...</p>
         </div>
       </div>
     );
@@ -70,7 +51,7 @@ const Page = () => {
     return (
       <div className="h-screen flex items-center justify-center py-12">
         <div className="flex flex-col items-center gap-3">
-          <p className="text-gray-500">No Closed jobs</p>
+          <p className="text-gray-500">No Applicants</p>
         </div>
       </div>
     );
@@ -98,34 +79,20 @@ const Page = () => {
         </header>
         <div className="flex flex-col w-full  lg:p-10 p-5 min-h-0 ">
           <div className="pb-5 ">
-            <h1 className="text-2xl font-bold mb-5">Closed Jobs</h1>
-            <div className="flex w-full items-center gap-2 border px-3 rounded-full py-2 border-gray-300 mb-6 ">
-              <Search className="text-gray-600" />
-              <Input
-                type="search"
-                placeholder="Job title, keyword, company"
-                className="h-10 outline-none border-0 focus-visible:ring-0 xl:text text-[13px]"
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
+            <h1 className="text-3xl font-bold mb-5 text-gray-800">
+              Accepted Applicants
+            </h1>
           </div>
           <div
             className="flex-1 overflow-y-auto custom-scrollbar pr-2"
             style={scrollbarStyles as any}
           >
             <div className="space-y-4 overflow-y-auto">
-              {closedJobs().map((job: job, index: number) => {
-                const matchScore = 75 + Math.floor(Math.random() * 20);
-
-                return (
-                  <CompanyJobsCard
-                    job={job}
-                    index={index}
-                    matchScore={matchScore}
-                    //setSelectedJob={setSelectedJob}
-                  />
-                );
-              })}
+              {jobs?.map((job: job, index: number) => (
+                <div className="" key={index}>
+                  <ApplicantsCard job={job} index={index} accepted />
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -133,5 +100,4 @@ const Page = () => {
     </>
   );
 };
-
 export default Page;

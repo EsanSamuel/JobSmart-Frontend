@@ -8,12 +8,12 @@ import { SidebarInset } from "@/components/ui/sidebar";
 import { useApi } from "@/hooks/useApi";
 import { job } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { CheckCircle, Search } from "lucide-react";
+import { CheckCircle, Loader2, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
 const Page = () => {
-  const api = useApi()
+  const api = useApi();
   const { data: session } = useSession();
   const [search, setSearch] = useState("");
   const scrollbarStyles = {
@@ -37,9 +37,20 @@ const Page = () => {
     enabled: !!session?.user?.id,
   });
 
-  const handleSearch = () => {
-    setSearch(search);
-    refetch();
+  const filterJobs = () => {
+    if (!search.trim()) {
+      return jobs?.filter((job: any) => job.isClosed === false);
+    }
+
+    const matchSearch = (job: job) => {
+      return [
+        job.title.toLowerCase(),
+        job.jobType.toLowerCase(),
+        job.description.toLowerCase(),
+      ].some((field) => field.includes(search));
+    };
+
+    return jobs.filter(matchSearch);
   };
 
   useEffect(() => {
@@ -48,7 +59,29 @@ const Page = () => {
     }
   }, [search]);
 
-  const activeJobs = () => jobs?.filter((job: any) => job.isClosed === false);
+  const activeJobs = () =>
+    filterJobs()?.filter((job: any) => job.isClosed === false);
+
+  if (isPending) {
+    return (
+      <div className="h-screen flex items-center justify-center py-12">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+          <p className="text-gray-500">Loading active jobs...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!jobs) {
+    return (
+      <div className="h-screen flex items-center justify-center py-12">
+        <div className="flex flex-col items-center gap-3">
+          <p className="text-gray-500">No Active jobs</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -67,7 +100,7 @@ const Page = () => {
           background: #94a3b8;
         }
       `}</style>
-      <SidebarInset className="bg-white h-screen overflow-hidden">
+      <SidebarInset className="bg-background h-screen overflow-hidden">
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <DashboardNav />
         </header>
@@ -82,13 +115,6 @@ const Page = () => {
                 onChange={(e) => setSearch(e.target.value)}
                 className="h-10 outline-none border-0 focus-visible:ring-0 xl:text text-[13px]"
               />
-              <Button
-                type="submit"
-                className="rounded-full"
-                onClick={handleSearch}
-              >
-                Find Jobs
-              </Button>
             </div>
           </div>
           <div

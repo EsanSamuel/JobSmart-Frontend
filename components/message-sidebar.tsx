@@ -1,7 +1,18 @@
 "use client";
 
 import * as React from "react";
-import { ArchiveX, Command, File, Inbox, Send, Trash2 } from "lucide-react";
+import {
+  ArchiveX,
+  ClipboardCheck,
+  Command,
+  File,
+  Inbox,
+  LayoutDashboard,
+  Send,
+  Settings,
+  Trash2,
+  Users,
+} from "lucide-react";
 
 import { NavUser } from "@/components/nav-user";
 import { Label } from "@/components/ui/label";
@@ -43,27 +54,27 @@ const data = {
       isActive: true,
     },
     {
-      title: "Drafts",
-      url: "#",
-      icon: File,
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: LayoutDashboard,
       isActive: false,
     },
     {
-      title: "Sent",
-      url: "#",
-      icon: Send,
+      title: "Jobs Listed",
+      url: "/dashboard/jobs/active",
+      icon: ClipboardCheck,
       isActive: false,
     },
     {
-      title: "Junk",
-      url: "#",
-      icon: ArchiveX,
+      title: "Applicants",
+      url: "/dashboard/applicants",
+      icon: Users,
       isActive: false,
     },
     {
-      title: "Trash",
+      title: "Settings",
       url: "#",
-      icon: Trash2,
+      icon: Settings,
       isActive: false,
     },
   ],
@@ -266,30 +277,34 @@ export function MessageSidebar({
             <SidebarGroupContent className="px-1.5 md:px-0">
               <SidebarMenu>
                 {data.navMain.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      tooltip={{
-                        children: item.title,
-                        hidden: false,
-                      }}
-                      onClick={() => {
-                        setActiveItem(item);
-                        const mail = data.mails.sort(() => Math.random() - 0.5);
-                        setMails(
-                          mail.slice(
-                            0,
-                            Math.max(5, Math.floor(Math.random() * 10) + 1)
-                          )
-                        );
-                        setOpen(true);
-                      }}
-                      isActive={activeItem?.title === item.title}
-                      className="px-2.5 md:px-2"
-                    >
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                  <a href={item.url}>
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        tooltip={{
+                          children: item.title,
+                          hidden: false,
+                        }}
+                        onClick={() => {
+                          setActiveItem(item);
+                          const mail = data.mails.sort(
+                            () => Math.random() - 0.5
+                          );
+                          setMails(
+                            mail.slice(
+                              0,
+                              Math.max(5, Math.floor(Math.random() * 10) + 1)
+                            )
+                          );
+                          setOpen(true);
+                        }}
+                        isActive={activeItem?.title === item.title}
+                        className="px-2.5 md:px-2"
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </a>
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>

@@ -113,8 +113,8 @@ const data = {
           url: "/dashboard/applicants/shortlisted",
         },
         {
-          title: "Interviews",
-          url: "/company/applicants/interviews",
+          title: "Accepted",
+          url: "/dashboard/applicants/accepted",
         },
       ],
     },

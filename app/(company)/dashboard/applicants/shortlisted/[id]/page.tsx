@@ -87,7 +87,7 @@ const Page = () => {
   if (!job) {
     return (
       <div className="h-[calc(100vh-73px)] flex items-center justify-center">
-        <p className="text-gray-500">No Job</p>
+        <p className="text-gray-500">No Applicants</p>
       </div>
     );
   }

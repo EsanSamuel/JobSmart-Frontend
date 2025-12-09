@@ -4,6 +4,7 @@ import "./globals.css";
 import Provider from "@/components/Provider";
 import UserProvider from "@/app/context/userContext";
 import QueryProvider from "@/components/QueryProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +37,16 @@ export default function RootLayout({
       <body className={`${poppins.variable} antialiased`}>
         <Provider>
           <QueryProvider>
-            <UserProvider>{children}</UserProvider>
+            <UserProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+              </ThemeProvider>
+            </UserProvider>
           </QueryProvider>
         </Provider>
       </body>

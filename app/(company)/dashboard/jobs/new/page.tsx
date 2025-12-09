@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import { UserContext } from "@/app/context/userContext";
 import { useApi } from "@/hooks/useApi";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const api = useApi();
@@ -44,6 +45,7 @@ const Page = () => {
     jobType: "",
   });
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleCreateJob = async (e: FormEvent) => {
     e.preventDefault();
@@ -75,6 +77,9 @@ const Page = () => {
         jobType: job.jobType,
       });
       console.log(response.data.data);
+      if (response.data.data) {
+        router.push("/dashboard");
+      }
     } catch (error) {
       console.log(error);
     } finally {

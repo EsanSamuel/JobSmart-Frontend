@@ -5,7 +5,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-import { Sparkles, User, Star, Mail } from "lucide-react";
+import {
+  Sparkles,
+  User,
+  Star,
+  Mail,
+  FileText,
+  CheckCircle,
+} from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -39,6 +46,18 @@ const ApplicantDataModal = ({ match, job }: { match: Match; job: any }) => {
     setIsLoading(true);
     try {
       await api.patch(`/api/v1/jobs/shortlist/${match.id}`);
+      setIsShortlisted(true);
+    } catch (error) {
+      console.error("Error adding to shortlist:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAccept = async () => {
+    setIsLoading(true);
+    try {
+      await api.patch(`/api/v1/jobs/accept/${match.id}`);
       setIsShortlisted(true);
     } catch (error) {
       console.error("Error adding to shortlist:", error);
@@ -156,44 +175,52 @@ const ApplicantDataModal = ({ match, job }: { match: Match; job: any }) => {
           </div>
         </div>
       </ScrollArea>
-      <div className="flex gap-2 mt-5">
-        {isApplicantPath &&
-        pathname !== "/dashboard/applicants/shortlisted" &&
-        !isPath ? (
-          <Button
-            variant="outline"
-            className="flex-1"
-            onClick={handleAddToShortlist}
-            disabled={isShortlisted || isLoading}
-          >
-            <Star
-              className={`h-4 w-4 mr-2 ${
-                isShortlisted ? "fill-yellow-400 text-yellow-400" : ""
-              }`}
-            />
-            {isShortlisted
-              ? "Shortlisted"
-              : isLoading
-              ? "Adding..."
-              : "Add to Shortlist"}
-          </Button>
-        ) : (
-          <Button
-            variant="outline"
-            className="flex-1"
-            onClick={handleChatRoom}
-            disabled={isShortlisted || isLoading}
-          >
-            <Mail /> Inbox
+      <div className="grid grid-cols-2 gap-2 mt-5 w-full">
+        {!pathname.startsWith("/dashboard/applicants/shortlisted") &&
+          !pathname.startsWith("/dashboard/applicants/accepted") && (
+            <Button
+              variant="outline"
+              onClick={handleAddToShortlist}
+              disabled={isShortlisted || isLoading}
+            >
+              <Star
+                className={`h-4 w-4 mr-2 ${
+                  isShortlisted ? "fill-yellow-400 text-yellow-400" : ""
+                }`}
+              />
+              {isShortlisted
+                ? "Shortlisted"
+                : isLoading
+                ? "Adding..."
+                : "Add to Shortlist"}
+            </Button>
+          )}
+
+        {(pathname.startsWith("/dashboard/applicants/shortlisted") ||
+          pathname.startsWith("/dashboard/applicants/accepted")) && (
+          <Button variant="outline" onClick={handleChatRoom} className="w-full">
+            <Mail className="h-4 w-4 mr-2" />
+            Inbox
           </Button>
         )}
+
+        {!pathname.startsWith("/dashboard/applicants/accepted") && (
+          <Button variant="outline" onClick={handleAccept}>
+            <CheckCircle className="h-4 w-4 mr-2" />
+            Accept
+          </Button>
+        )}
+
         <a
           href={match?.fileUrl!}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1"
+          className="col-span-2"
         >
-          <Button className="w-full">View Resume</Button>
+          <Button className="w-full">
+            <FileText className="h-4 w-4 mr-2" />
+            View Resume
+          </Button>
         </a>
       </div>
     </DialogContent>

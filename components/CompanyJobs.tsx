@@ -57,7 +57,7 @@ const CompanyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
   return (
     <Card
       key={index}
-      className="border border-gray-200 hover:shadow-xl hover:border-blue-200 transition-all duration-300 w-full rounded-2xl cursor-pointer bg-white overflow-hidden group"
+      className="border border-gray-200 hover:shadow-xl hover:border-blue-200 transition-all duration-300 w-full rounded-2xl cursor-pointer bg-background overflow-hidden group"
       onClick={() => setSelectedJob(job)}
     >
       <CardHeader className="pb-4">

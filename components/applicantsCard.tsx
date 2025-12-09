@@ -25,14 +25,21 @@ import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogTrigger } from "./ui/dialog";
 import ApplicantDataModal from "./ApplicantDataModal";
 import { useApi } from "@/hooks/useApi";
+import { resume } from "@/types";
 
 interface Ijobs {
   job: any;
   index?: number;
   shortlisted?: boolean;
+  accepted?: boolean;
 }
 
-export default function ApplicantsCard({ job, index, shortlisted }: Ijobs) {
+export default function ApplicantsCard({
+  job,
+  index,
+  shortlisted,
+  accepted,
+}: Ijobs) {
   const api = useApi();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -54,13 +61,17 @@ export default function ApplicantsCard({ job, index, shortlisted }: Ijobs) {
   });
 
   const showApplicants = () => {
-    if (!shortlisted) {
-      return job?.Resume || [];
-    } else {
+    if (shortlisted) {
       return (
         job?.Resume?.filter((resume: any) => resume.status === "ShortListed") ||
         []
       );
+    } else if (accepted) {
+      return (
+        job?.Resume?.filter((resume: resume) => resume.status === "Accepted") || []
+      );
+    } else {
+      return job?.Resume || [];
     }
   };
 
@@ -197,6 +208,16 @@ export default function ApplicantsCard({ job, index, shortlisted }: Ijobs) {
               variant="outline"
               onClick={() =>
                 router.push(`/dashboard/applicants/shortlisted/${job.id}`)
+              }
+            >
+              View All
+            </Button>
+          ) : accepted ? (
+            <Button
+              className=" w-full rounded-full border-gray-300"
+              variant="outline"
+              onClick={() =>
+                router.push(`/dashboard/applicants/accepted/${job.id}`)
               }
             >
               View All

@@ -1,6 +1,12 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { Send, Loader2, ArrowLeft, MoreVertical } from "lucide-react";
+import {
+  Send,
+  Loader2,
+  ArrowLeft,
+  MoreVertical,
+  Paperclip,
+} from "lucide-react";
 import { Message, user } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -8,6 +14,9 @@ import { useParams } from "next/navigation";
 import { io, Socket } from "socket.io-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useApi } from "@/hooks/useApi";
+import { Input } from "@/components/ui/input";
+import { FILE } from "dns";
+import Image from "next/image";
 
 export default function ChatRoom() {
   const api = useApi();
@@ -18,9 +27,14 @@ export default function ChatRoom() {
   const [isSending, setIsSending] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [typingUser, setTypingUser] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
+  const [fileUrls, setFileUrls] = useState<string[]>([]);
+  const [loadingFiles, setLoadingFiles] = useState(false);
+  const [previewFiles, setPreviewFiles] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<Socket | null>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const {
     isPending,
@@ -113,6 +127,51 @@ export default function ChatRoom() {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    if (files) {
+      const urls = files.map((file) => URL.createObjectURL(file));
+      setPreviewFiles(urls);
+      return () => {
+        if (previewFiles) {
+          previewFiles.forEach((url) => URL.revokeObjectURL(url));
+        }
+      };
+    }
+  }, [files]);
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fileList = e.target.files;
+    if (!fileList) return;
+    const fileArray = Array.from(fileList);
+    setFiles(fileArray);
+    setLoadingFiles(true);
+
+    let Files: string[] = [];
+    for (const file of fileArray) {
+      const presignedUrlResponse = await fetch("/api/s3/upload", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          fileName: file.name,
+          contentType: file.type,
+          size: file.size,
+        }),
+      });
+      const { presignedUrl, permanentUrl } = await presignedUrlResponse.json();
+
+      await fetch(presignedUrl, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      console.log(permanentUrl);
+      Files.push(permanentUrl);
+    }
+    setFileUrls(Files);
+    console.log(Files);
+    setLoadingFiles(false);
+  };
+
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim() || isSending) return;
@@ -129,10 +188,28 @@ export default function ChatRoom() {
       content: newMessage,
       senderId: session?.user?.id,
       roomId,
+      Files: fileUrls,
     });
 
     setNewMessage("");
+    setFileUrls([]);
+    setFiles([]);
     setIsSending(false);
+  };
+
+  const handleDelete = (messageId: string, userId: string, roomId: string) => {
+    try {
+      socketRef.current?.emit("deleteMessage", {
+        messageId,
+        userId,
+        roomId,
+      });
+      setMessages((prev) =>
+        prev.filter((msg: Message) => msg.id !== messageId)
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -227,7 +304,7 @@ export default function ChatRoom() {
                   )}
                   <div>
                     <div
-                      className={`rounded-2xl px-4 py-2 ${
+                      className={`rounded-2xl px-4 py-2 relative group ${
                         isOwn
                           ? "bg-blue-600 text-white rounded-br-sm"
                           : "bg-white text-gray-900 rounded-bl-sm shadow-sm"
@@ -235,7 +312,34 @@ export default function ChatRoom() {
                     >
                       <p className="text-sm leading-relaxed">
                         {message.content}
+                        {message.Files.map((url, idx) => (
+                          <Image
+                            key={idx}
+                            src={url}
+                            width={200}
+                            height={200}
+                            alt={url}
+                            className="w-30 h-20 rounded-2xl"
+                          />
+                        ))}
                       </p>
+
+                      {isOwn && (
+                        <button
+                          onClick={() =>
+                            handleDelete(
+                              message.id,
+                              session?.user?.id!,
+                              roomId as string
+                            )
+                          }
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 rounded-full items-center justify-center
+                           text-white opacity-0 group-hover:opacity-100 transition-opacity hidden group-hover:flex"
+                          title="Delete message"
+                        >
+                          <span className="text-xs">×</span>
+                        </button>
+                      )}
                     </div>
                     <p
                       className={`text-xs text-gray-500 mt-1 px-1 ${
@@ -258,16 +362,36 @@ export default function ChatRoom() {
             );
           })
         )}
-      {isTyping && typingUser !== session?.user?.name && (
-        <div className="px-4 py-2 text-sm text-gray-600 bg-gray-100">
-          <span className="italic">{typingUser} is typing...</span>
-        </div>
-      )}
+        {isTyping && typingUser !== session?.user?.name && (
+          <div className="px-4 py-2 text-sm text-gray-600 bg-gray-100">
+            <span className="italic">{typingUser} is typing...</span>
+          </div>
+        )}
 
         <div ref={messagesEndRef} />
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 shadow-lg">
+        {previewFiles.length > 0 && (
+          <div className="grid xl:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-2 w-80">
+            {previewFiles.map((url) => (
+              <div className="relative">
+                <Image
+                  src={url}
+                  width={200}
+                  height={200}
+                  alt={url}
+                  className="w-30 h-20 rounded-2xl"
+                />
+                {loadingFiles && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-2xl">
+                    <Loader2 className="w-5 h-5 text-white animate-spin" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
         <div className="flex items-center gap-2">
           <input
             type="text"
@@ -283,6 +407,28 @@ export default function ChatRoom() {
             className="flex-1 px-4 py-3 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
             disabled={isSending}
           />
+          <div className="relative h-full">
+            <Input
+              id="files"
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              multiple
+              onChange={handleFile}
+            />
+            <button
+              //onClick={handleFile}
+              disabled={!files}
+              onClick={() => fileInputRef.current?.click()}
+              className="w-12 h-12 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors shadow-md shrink-0"
+            >
+              {loadingFiles ? (
+                <Loader2 className="w-5 h-5 text-white animate-spin" />
+              ) : (
+                <Paperclip className="w-5 h-5 text-white" />
+              )}
+            </button>
+          </div>
           <button
             onClick={handleSend}
             disabled={!newMessage.trim() || isSending}

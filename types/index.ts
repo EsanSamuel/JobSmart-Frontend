@@ -61,6 +61,7 @@ export interface resume {
   matchedSkills: string[];
   missingSkills: string[];
   summary: string | null;
+  status: "Pending" | "ShortListed" | "Interview" | "Rejected" | "Accepted";
 }
 
 export interface bookmark {

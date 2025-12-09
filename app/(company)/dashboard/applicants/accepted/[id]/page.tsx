@@ -23,7 +23,7 @@ import React, { useMemo, useState } from "react";
 
 const Page = () => {
   const { id } = useParams();
-    const api = useApi()
+  const api = useApi();
   const [progress, setProgress] = React.useState(13);
   const [filterResume, setFilterResume] = useState("ALL");
 
@@ -73,7 +73,11 @@ const Page = () => {
     }
   }, [resumeData, filterResume]);
 
-  const totalApplicants = job?.Resume?.length ?? 0;
+  const filterAcceptedApplicant = filteredResumes?.filter(
+    (resume: any) => resume.status === "Accepted"
+  );
+
+  const totalApplicants = filterAcceptedApplicant?.length ?? 0;
 
   const scrollbarStyles = {
     scrollbarWidth: "thin",
@@ -83,7 +87,7 @@ const Page = () => {
   if (!job) {
     return (
       <div className="h-[calc(100vh-73px)] flex items-center justify-center">
-        <p className="text-gray-500">No Applicants</p>
+        <p className="text-gray-500">No Job</p>
       </div>
     );
   }
@@ -112,7 +116,7 @@ const Page = () => {
         <div className="flex flex-col w-full  lg:p-10 p-5 min-h-0 ">
           <div className="pb-5 lg:flex justify-between items-center">
             <h1 className="text-3xl font-bold mb-5 text-gray-800">
-              Applicants ({totalApplicants})
+              Accepted Applicants ({totalApplicants})
             </h1>
             <Select
               value={filterResume}
@@ -180,7 +184,7 @@ const Page = () => {
                     </p>
                   </div>
                 ) : (
-                  <Applicants job={job} jobResumes={filteredResumes} />
+                  <Applicants job={job} jobResumes={filterAcceptedApplicant} />
                 )}
               </div>
             </div>

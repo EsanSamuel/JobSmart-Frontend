@@ -79,7 +79,7 @@ export default function Page() {
           background: #94a3b8;
         }
       `}</style>
-      <SidebarInset className="bg-white ">
+      <SidebarInset className="">
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <DashboardNav />
         </header>
@@ -113,7 +113,7 @@ export default function Page() {
               <p className="text-sm text-gray-600 font-medium">Applicants</p>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-300 p-6 hover:shadow-md transition-shadow">
+            <div className=" rounded-xl border border-gray-300 p-6 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 rounded-lg bg-green-50 flex items-center justify-center">
                   <CheckCircle className="h-6 w-6 text-amber-600" />
