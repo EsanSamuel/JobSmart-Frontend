@@ -301,7 +301,9 @@ export default function ChatRoom() {
                   )}
                   <div>
                     <div
-                      className={`rounded-2xl px-4 py-2 relative group ${
+                      className={`rounded-2xl ${
+                        message.Files.length > 0 ? "p-2" : "px-4 py-2"
+                      }  relative group ${
                         isOwn
                           ? "bg-blue-600 text-white rounded-br-sm"
                           : "bg-white text-gray-900 rounded-bl-sm shadow-sm"
