@@ -8,6 +8,7 @@ import {
   User,
   CheckCircle2,
   SendHorizontal,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -27,7 +28,7 @@ import axios from "axios";
 import { job } from "@/types";
 
 interface IJob {
-  job: job
+  job: job;
 }
 
 const Apply = ({ job }: IJob) => {
@@ -35,12 +36,14 @@ const Apply = ({ job }: IJob) => {
   const [file, setFile] = useState<File | null>();
   const [matchScore, setMatchScore] = useState(false);
   const [progress, setProgress] = React.useState(13);
+  const [isLoading, setIsLoading] = useState(false);
   const percentage = 66;
 
   const submitResume = async () => {
     if (!job.id) {
       return null;
     }
+    setIsLoading(true);
 
     const formData = new FormData();
     formData.append("authId", user.id);
@@ -51,7 +54,7 @@ const Apply = ({ job }: IJob) => {
     }
 
     const response = await axios.post(
-      "http://localhost:5000/api/v1/jobs/submit-resume",
+      "https://jobsmart-backend.onrender.com/api/v1/jobs/submit-resume",
       formData,
       {
         headers: {
@@ -61,6 +64,7 @@ const Apply = ({ job }: IJob) => {
     );
 
     console.log(response.data.data);
+    setIsLoading(false);
   };
 
   React.useEffect(() => {
@@ -72,7 +76,7 @@ const Apply = ({ job }: IJob) => {
     <DialogContent className="sm:max-w-[500px]">
       <DialogHeader className="space-y-3">
         <div className="flex items-center gap-2">
-          <div className="w-12 h-12 rounded-xl bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-blue-500 to-indigo-600 flex items-center justify-center">
             <SendHorizontal className="h-6 w-6 text-white" />
           </div>
           <div className="flex-1 items-start justify-start">
@@ -127,15 +131,24 @@ const Apply = ({ job }: IJob) => {
               />
             </label>
           </div>
-
-          <Button
-            onClick={submitResume}
-            className="w-full h-11 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
-            disabled={!file}
-          >
-            <SendHorizontal className="h-4 w-4 mr-2" />
-            Submit CV
-          </Button>
+          {isLoading ? (
+            <Button
+              className="w-full h-11 bg-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+              disabled={isLoading}
+            >
+              <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+              Applying...
+            </Button>
+          ) : (
+            <Button
+              onClick={submitResume}
+              className="w-full h-11 bg-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+              disabled={!file}
+            >
+              <SendHorizontal className="h-4 w-4 mr-2" />
+              Submit CV
+            </Button>
+          )}
         </div>
 
         <div className="relative">
