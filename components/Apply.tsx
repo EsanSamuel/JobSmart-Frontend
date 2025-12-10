@@ -26,6 +26,7 @@ import "react-circular-progressbar/dist/styles.css";
 import { UserContext } from "@/app/context/userContext";
 import axios from "axios";
 import { job } from "@/types";
+import { useSession } from "next-auth/react";
 
 interface IJob {
   job: job;
@@ -33,6 +34,7 @@ interface IJob {
 
 const Apply = ({ job }: IJob) => {
   const { user } = useContext(UserContext) as any;
+  const { data: session } = useSession();
   const [file, setFile] = useState<File | null>();
   const [matchScore, setMatchScore] = useState(false);
   const [progress, setProgress] = React.useState(13);
@@ -59,6 +61,7 @@ const Apply = ({ job }: IJob) => {
       {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${session?.user?.accessToken}`,
         },
       }
     );
