@@ -247,7 +247,7 @@ export default function ChatRoom() {
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </button>
           {roomName()?.profileImage ? (
-            <Avatar>
+            <Avatar className="object-contain">
               <AvatarImage src={roomName()?.profileImage} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
@@ -290,7 +290,7 @@ export default function ChatRoom() {
                   {!isOwn && (
                     <>
                       {roomName()?.profileImage ? (
-                        <Avatar>
+                        <Avatar className="object-contain">
                           <AvatarImage src={roomName()?.profileImage} />
                           <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
@@ -330,7 +330,7 @@ export default function ChatRoom() {
                                   <img
                                     src={url}
                                     alt={`attachment-${idx}`}
-                                    className="w-full max-w-[200px] h-32 object-cover hover:scale-105 transition-transform cursor-pointer"
+                                    className="w-full max-w-[300px] h-32 object-cover hover:scale-105 transition-transform cursor-pointer"
                                     onClick={() => window.open(url, "_blank")}
                                   />
                                 ) : url.endsWith(".pdf") ? (
@@ -338,7 +338,7 @@ export default function ChatRoom() {
                                     <iframe
                                       src={url}
                                       //alt={`attachment-${idx}`}
-                                      className="w-full max-w-[200px] h-32 object-cover hover:scale-105 transition-transform cursor-pointer"
+                                      className="w-full max-w-[300px] h-32 object-cover hover:scale-105 transition-transform cursor-pointer"
                                       onClick={() => window.open(url, "_blank")}
                                     />
                                   </a>

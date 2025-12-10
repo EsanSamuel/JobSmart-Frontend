@@ -78,7 +78,7 @@ const Page = () => {
                         />
                       </>
                       <div className="flex-1">
-                        <CardTitle className="text-lg font-semibold text-gray-900 truncate w-50">
+                        <CardTitle className="text-lg font-semibold text-gray-900 truncate w-45">
                           {job.title}
                         </CardTitle>
                         <CardDescription className="text-sm text-gray-500 flex gap-3">
