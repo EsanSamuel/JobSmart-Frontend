@@ -73,7 +73,7 @@ const Page = () => {
                           src={job?.createdBy?.profileImage || "/flutterwave.png"}
                           width={100}
                           height={100}
-                          className="xl:w-12 xl:h-12 object-contain h-8 w-8 rounded-xl"
+                          className="xl:w-12 xl:h-12 object-cover h-8 w-8 rounded-xl"
                           alt=""
                         />
                       </>
