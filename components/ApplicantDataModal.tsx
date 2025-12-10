@@ -183,16 +183,8 @@ const ApplicantDataModal = ({ match, job }: { match: Match; job: any }) => {
               onClick={handleAddToShortlist}
               disabled={isShortlisted || isLoading}
             >
-              <Star
-                className={`h-4 w-4 mr-2 ${
-                  isShortlisted ? "fill-yellow-400 text-yellow-400" : ""
-                }`}
-              />
-              {isShortlisted
-                ? "Shortlisted"
-                : isLoading
-                ? "Adding..."
-                : "Add to Shortlist"}
+              <Star className={`h-4 w-4 mr-2 `} />
+              Shortlist
             </Button>
           )}
 
