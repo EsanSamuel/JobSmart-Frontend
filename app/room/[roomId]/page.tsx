@@ -343,7 +343,7 @@ export default function ChatRoom() {
                                   <img
                                     src={url}
                                     alt={`attachment-${idx}`}
-                                    className="w-full max-w-[300px] h-40 object-cover hover:scale-105 transition-transform cursor-pointer rounded-lg"
+                                    className="w-full max-w-[300px] lg:h-40 h-30 object-cover hover:scale-105 transition-transform cursor-pointer rounded-lg"
                                     onClick={() => window.open(url, "_blank")}
                                   />
                                 ) : url.endsWith(".pdf") ? (
