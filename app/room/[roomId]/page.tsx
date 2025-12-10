@@ -269,7 +269,6 @@ export default function ChatRoom() {
           <MoreVertical className="w-5 h-5 text-gray-600" />
         </button>
       </div>
-
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 pb-24">
         {messages.length === 0 ? (
@@ -413,18 +412,19 @@ export default function ChatRoom() {
 
         <div ref={messagesEndRef} />
       </div>
-
-      <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 shadow-lg w-full flex items-center justify-center">
+      // Replace the bottom input section (starting from line 356) with this:
+      <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 shadow-lg">
+        {/* File Previews */}
         {previewFiles.length > 0 && (
-          <div className="grid xl:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-2 w-80">
-            {previewFiles.map((url) => (
-              <div className="relative">
+          <div className="mb-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-w-full">
+            {previewFiles.map((url, idx) => (
+              <div key={idx} className="relative">
                 <Image
                   src={url}
                   width={200}
                   height={200}
                   alt={url}
-                  className="w-30 h-20 rounded-2xl"
+                  className="w-full h-20 rounded-2xl object-cover"
                 />
                 {loadingFiles && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-2xl">
@@ -435,7 +435,9 @@ export default function ChatRoom() {
             ))}
           </div>
         )}
-        <div className="flex items-center gap-2">
+
+        {/* Input Row */}
+        <div className="flex items-center gap-2 w-full">
           <input
             type="text"
             value={newMessage}
@@ -447,10 +449,12 @@ export default function ChatRoom() {
               }
             }}
             placeholder="Type a message..."
-            className="flex-1 px-4 py-3 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+            className="flex-1 min-w-0 px-4 py-3 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
             disabled={isSending}
           />
-          <div className="relative h-full">
+
+          {/* File Upload Button */}
+          <div className="relative shrink-0">
             <Input
               id="files"
               ref={fileInputRef}
@@ -460,27 +464,28 @@ export default function ChatRoom() {
               onChange={handleFile}
             />
             <button
-              //onClick={handleFile}
-              disabled={!files}
+              disabled={loadingFiles}
               onClick={() => fileInputRef.current?.click()}
-              className="w-12 h-12 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors shadow-md shrink-0"
+              className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors shadow-md"
             >
               {loadingFiles ? (
-                <Loader2 className="w-5 h-5 text-white animate-spin" />
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 text-white animate-spin" />
               ) : (
-                <Paperclip className="w-5 h-5 text-white" />
+                <Paperclip className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               )}
             </button>
           </div>
+
+          {/* Send Button */}
           <button
             onClick={handleSend}
             disabled={!newMessage.trim() || isSending}
-            className="w-12 h-12 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors shadow-md shrink-0"
+            className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors shadow-md shrink-0"
           >
             {isSending ? (
-              <Loader2 className="w-5 h-5 text-white animate-spin" />
+              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 text-white animate-spin" />
             ) : (
-              <Send className="w-5 h-5 text-white" />
+              <Send className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             )}
           </button>
         </div>
