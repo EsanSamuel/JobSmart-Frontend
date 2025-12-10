@@ -168,7 +168,7 @@ export default function Applicants({ job, jobResumes }: Ijobs) {
                     </div>
                     <div className="flex items-center gap-1.5 mt-1">
                       <Mail className="w-3.5 h-3.5 text-gray-400" />
-                      <p className="text-sm text-gray-600 truncate xl:w-70 w-30>
+                      <p className="text-sm text-gray-600 truncate xl:w-70 w-30">
                         {applicant?.user?.email}
                       </p>
                     </div>
