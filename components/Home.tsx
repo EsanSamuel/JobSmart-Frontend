@@ -299,7 +299,7 @@ const Home = () => {
           <div className="flex gap-6 h-full">
             <div className="flex flex-col w-full lg:w-[45%] xl:w-[420px] min-h-0">
               <h1 className="lg:text-2xl text-[18px] font-bold mb-4 text-gray-800 shrink-0">
-                Find Jobs
+                Explore Jobs
               </h1>
 
               <div
