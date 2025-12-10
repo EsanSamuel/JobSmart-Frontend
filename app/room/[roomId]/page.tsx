@@ -30,6 +30,7 @@ export default function ChatRoom() {
   const [fileUrls, setFileUrls] = useState<string[]>([]);
   const [loadingFiles, setLoadingFiles] = useState(false);
   const [previewFiles, setPreviewFiles] = useState<string[]>([]);
+  const [showDeleteFor, setShowDeleteFor] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<Socket | null>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -301,6 +302,9 @@ export default function ChatRoom() {
                   )}
                   <div>
                     <div
+                      onTouchStart={() => isOwn && setShowDeleteFor(message.id)}
+                      onMouseEnter={() => isOwn && setShowDeleteFor(message.id)}
+                      onMouseLeave={() => setShowDeleteFor(null)}
                       className={`rounded-2xl ${
                         message.Files.length > 0 ? "p-2" : "px-4 py-2"
                       }  relative group ${
@@ -397,20 +401,33 @@ export default function ChatRoom() {
                         )}
                       </div>
 
-                      {isOwn && (
+                      {isOwn && showDeleteFor === message.id && (
                         <button
-                          onClick={() =>
+                          onClick={(e) => {
+                            e.stopPropagation();
                             handleDelete(
                               message.id,
                               session?.user?.id!,
                               roomId as string
-                            )
-                          }
-                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 rounded-full items-center justify-center
-                           text-white opacity-0 group-hover:opacity-100 transition-opacity hidden group-hover:flex"
+                            );
+                            setShowDeleteFor(null);
+                          }}
+                          className="absolute -top-2 -right-2 w-7 h-7 bg-red-500 hover:bg-red-600 active:bg-red-700 rounded-full flex items-center justify-center text-white shadow-lg animate-in fade-in zoom-in duration-200"
                           title="Delete message"
                         >
-                          <span className="text-xs">×</span>
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
                         </button>
                       )}
                     </div>
