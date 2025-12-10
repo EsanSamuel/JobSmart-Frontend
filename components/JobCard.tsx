@@ -108,7 +108,7 @@ const JobCard = ({ job, index, selectedJob, setSelectedJob }: IJob) => {
               src={job?.createdBy?.profileImage || "/flutterwave.png"}
               width={100}
               height={100}
-              className="w-12 h-12 object-contain rounded-xl"
+              className="w-12 h-12 object-cover rounded-xl"
               alt=""
             />
           </>
