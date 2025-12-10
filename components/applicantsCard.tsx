@@ -160,7 +160,7 @@ export default function ApplicantsCard({
           .slice(1, 3)
           ?.map((applicant: any, idx: number) => (
             <div
-              className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all overflow-hidden"
+              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all overflow-hidden"
               key={idx}
             >
               <div className="px-6 py-4">
@@ -179,7 +179,7 @@ export default function ApplicantsCard({
                       </h3>
                       <div className="flex items-center gap-1.5 mt-1">
                         <Mail className="w-3.5 h-3.5 text-gray-400" />
-                        <p className="text-sm text-gray-600 truncate">
+                        <p className="text-sm text-gray-600 truncate xl:w-70 w-30">
                           {applicant?.user?.email}
                         </p>
                       </div>
