@@ -70,7 +70,7 @@ const Page = () => {
                     <div className="flex flex-row gap-2 items-center">
                       <>
                         <img
-                          src={job.createdBy.profileImage || "/flutterwave.png"}
+                          src={job?.createdBy?.profileImage || "/flutterwave.png"}
                           width={100}
                           height={100}
                           className="xl:w-12 xl:h-12 h-8 w-8 rounded-xl"
@@ -78,7 +78,7 @@ const Page = () => {
                         />
                       </>
                       <div className="flex-1">
-                        <CardTitle className="text-lg font-semibold text-gray-900">
+                        <CardTitle className="text-lg font-semibold text-gray-900 truncate w-50">
                           {job.title}
                         </CardTitle>
                         <CardDescription className="text-sm text-gray-500 flex gap-3">
