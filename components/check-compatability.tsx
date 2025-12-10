@@ -28,6 +28,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import { job, match } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useApi } from "@/hooks/useApi";
+import { useSession } from "next-auth/react";
 
 interface IJob {
   job: job;
@@ -35,6 +36,7 @@ interface IJob {
 
 const Compatibility = ({ job }: IJob) => {
   const api = useApi();
+  const { data: session } = useSession();
   const { user } = useContext(UserContext) as any;
   const [file, setFile] = useState<File | null>();
   const [isMatched, setIsMatched] = useState(false);
@@ -106,6 +108,7 @@ const Compatibility = ({ job }: IJob) => {
       {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${session?.user?.accessToken}`,
         },
       }
     );
