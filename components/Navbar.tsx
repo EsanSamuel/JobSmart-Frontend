@@ -66,7 +66,7 @@ const Navbar = () => {
     <nav className="border-b border-gray-300 bg-white px-5 xl:px-[12%] py-4 fixed w-full mb-10 z-10">
       <div className="flex items-center justify-between">
         <Link href="/">
-          <h1 className="md:text-2xl text-[14px] font-bold text-blue-600 flex items-center">
+          <h1 className="md:text-2xl text-[16px] font-bold text-blue-600 flex items-center">
             <Waypoints className="mr-2" /> JobSmart
           </h1>
         </Link>
