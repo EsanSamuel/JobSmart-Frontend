@@ -33,18 +33,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${poppins.variable} antialiased`}>
         <Provider>
           <QueryProvider>
             <UserProvider>
-              {/*<ThemeProvider
+             {/* <ThemeProvider
                 attribute="class"
-                defaultTheme="system"
+                defaultTheme="dark"
                 enableSystem
                 disableTransitionOnChange
               >*/}
-              {children}
+                {children}
               {/*</ThemeProvider>*/}
             </UserProvider>
           </QueryProvider>
@@ -53,3 +53,4 @@ export default function RootLayout({
     </html>
   );
 }
+

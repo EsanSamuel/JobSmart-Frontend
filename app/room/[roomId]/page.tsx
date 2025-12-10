@@ -308,7 +308,6 @@ export default function ChatRoom() {
                       }`}
                     >
                       <div className="space-y-2">
-                        {/* Images Grid */}
                         {message.Files && message.Files.length > 0 && (
                           <div
                             className={`grid gap-2 ${
@@ -322,7 +321,7 @@ export default function ChatRoom() {
                             {message.Files.map((url, idx) => (
                               <div
                                 key={idx}
-                                className="relative overflow-hidden rounded-lg"
+                                className="relative overflow-hidden rounded-lg bg-gray-100"
                               >
                                 {url.endsWith(".jpg") ||
                                 url.endsWith(".jpeg") ||
@@ -330,33 +329,64 @@ export default function ChatRoom() {
                                   <img
                                     src={url}
                                     alt={`attachment-${idx}`}
-                                    className="w-full max-w-[300px] h-32 object-cover hover:scale-105 transition-transform cursor-pointer"
+                                    className="w-full max-w-[300px] h-40 object-cover hover:scale-105 transition-transform cursor-pointer rounded-lg"
                                     onClick={() => window.open(url, "_blank")}
                                   />
                                 ) : url.endsWith(".pdf") ? (
-                                  <a href={url}>
-                                    <iframe
-                                      src={url}
-                                      //alt={`attachment-${idx}`}
-                                      className="w-full max-w-[300px] h-32 object-cover hover:scale-105 transition-transform cursor-pointer"
-                                      onClick={() => window.open(url, "_blank")}
-                                    />
+                                  <a
+                                    href={url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex flex-col items-center justify-center w-full h-32 bg-red-50 hover:bg-red-100 transition-colors rounded-lg p-4"
+                                  >
+                                    <svg
+                                      className="w-12 h-12 text-red-600 mb-2"
+                                      fill="currentColor"
+                                      viewBox="0 0 20 20"
+                                    >
+                                      <path d="M4 18h12V6h-4V2H4v16zm-2 1V0h10l4 4v16H2v-1z" />
+                                      <path d="M6 14h8v1H6v-1zm0-2h8v1H6v-1zm0-2h8v1H6v-1z" />
+                                    </svg>
+                                    <span className="text-xs text-red-700 font-medium text-center truncate w-full">
+                                      PDF Document
+                                    </span>
                                   </a>
                                 ) : url.endsWith(".mp4") ? (
                                   <video
                                     src={url}
-                                    //alt={`attachment-${idx}`}
-                                    className="w-full h-32 object-cover hover:scale-105 transition-transform cursor-pointer"
-                                    onClick={() => window.open(url, "_blank")}
+                                    controls
+                                    className="w-full h-40 object-cover rounded-lg cursor-pointer"
+                                    onClick={(e) => e.stopPropagation()}
                                   />
                                 ) : (
-                                  <></>
+                                  <a
+                                    href={url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex flex-col items-center justify-center w-full h-32 bg-gray-100 hover:bg-gray-200 transition-colors rounded-lg p-4"
+                                  >
+                                    <svg
+                                      className="w-12 h-12 text-gray-600 mb-2"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                                      />
+                                    </svg>
+                                    <span className="text-xs text-gray-700 font-medium text-center truncate w-full">
+                                      File
+                                    </span>
+                                  </a>
                                 )}
                               </div>
                             ))}
                           </div>
                         )}
-
                         {/* Message Text */}
                         {message.content && (
                           <p className="text-sm leading-relaxed">

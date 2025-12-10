@@ -13,7 +13,7 @@ const Page = () => {
     redirect("/login");
   }
   return (
-    <div className="bg-white h-screen overflow-hidden">
+    <div className=" h-screen overflow-hidden">
       <Navbar />
       <Home />
     </div>
