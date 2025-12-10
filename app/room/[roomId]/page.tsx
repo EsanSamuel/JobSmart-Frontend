@@ -299,7 +299,7 @@ export default function ChatRoom() {
                   {!isOwn && (
                     <>
                       {roomName()?.profileImage ? (
-                        <Avatar className="object-contain">
+                        <Avatar className="object-cover">
                           <AvatarImage src={roomName()?.profileImage} />
                           <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
