@@ -53,7 +53,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     error: bookmarkError,
     data: bookmarks,
   } = useQuery({
-    queryKey: ["bookmarks", session?.user?.id],
+    queryKey: ["bookmark", session?.user?.id],
     queryFn: async () => {
       const response = await api.get(
         `/api/v1/bookmarks/user/${session?.user?.id}`
