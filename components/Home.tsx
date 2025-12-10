@@ -273,7 +273,7 @@ const Home = () => {
                 placeholder="Job title, keyword, company"
                 onChange={(e) => setSearch(e.target.value)}
                 value={search}
-                className="h-10 outline-none border-0 focus-visible:ring-0 xl:text text-[13px]"
+                className="h-10 outline-none border-none shadow-none focus-visible:ring-0 xl:text text-[13px]"
               />
 
               <Button

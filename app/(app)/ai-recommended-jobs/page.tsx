@@ -70,7 +70,7 @@ const Page = () => {
                     <div className="flex flex-row gap-2 items-center">
                       <>
                         <img
-                          src=""
+                          src={job.createdBy.profileImage || "/flutterwave.png"}
                           width={100}
                           height={100}
                           className="xl:w-12 xl:h-12 h-8 w-8 rounded-xl"

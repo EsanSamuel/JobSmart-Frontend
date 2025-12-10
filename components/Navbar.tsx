@@ -7,6 +7,7 @@ import {
   Waypoints,
   Menu,
   Mail,
+  Upload,
 } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -41,6 +42,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Dialog, DialogTrigger } from "./ui/dialog";
+import UploadProfileImage from "./uploadProfileImage";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
@@ -184,56 +187,23 @@ const Navbar = () => {
                   <div className="flex gap-2 items-center">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Avatar onClick={() => signOut()}>
+                        <Avatar>
                           <AvatarImage src={user?.profileImage} />
                           <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-56" align="start">
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                        <DropdownMenuGroup>
-                          <DropdownMenuItem>
-                            Profile
-                            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            Billing
-                            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            Settings
-                            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            Keyboard shortcuts
-                            <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
+
                         <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                          <DropdownMenuItem>Team</DropdownMenuItem>
-                          <DropdownMenuSub>
-                            <DropdownMenuSubTrigger>
-                              Invite users
-                            </DropdownMenuSubTrigger>
-                            <DropdownMenuPortal>
-                              <DropdownMenuSubContent>
-                                <DropdownMenuItem>Email</DropdownMenuItem>
-                                <DropdownMenuItem>Message</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>More...</DropdownMenuItem>
-                              </DropdownMenuSubContent>
-                            </DropdownMenuPortal>
-                          </DropdownMenuSub>
-                          <DropdownMenuItem>
-                            New Team
-                            <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>GitHub</DropdownMenuItem>
-                        <DropdownMenuItem>Support</DropdownMenuItem>
-                        <DropdownMenuItem disabled>API</DropdownMenuItem>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <p className="focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
+                              Upload profile image
+                            </p>
+                          </DialogTrigger>
+                          <UploadProfileImage />
+                        </Dialog>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => signOut()}>
                           Log out
@@ -347,10 +317,34 @@ const Navbar = () => {
               <Button variant="ghost">Sign In</Button>
             </a>
           ) : (
-            <Avatar onClick={() => signOut()}>
-              <AvatarImage src={user?.profileImage} />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
+            <div className="flex gap-2 items-center">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Avatar>
+                    <AvatarImage src={user?.profileImage} />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="start">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+
+                  <DropdownMenuSeparator />
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <p className="focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
+                        Upload profile image
+                      </p>
+                    </DialogTrigger>
+                    <UploadProfileImage />
+                  </Dialog>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => signOut()}>
+                    Log out
+                    <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           )}
           <Button>Post a Job</Button>
         </div>

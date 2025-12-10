@@ -15,7 +15,6 @@ import { io, Socket } from "socket.io-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useApi } from "@/hooks/useApi";
 import { Input } from "@/components/ui/input";
-import { FILE } from "dns";
 import Image from "next/image";
 
 export default function ChatRoom() {

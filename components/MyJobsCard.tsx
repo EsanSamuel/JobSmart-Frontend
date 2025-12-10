@@ -40,7 +40,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query";
 import { UserContext } from "@/app/context/userContext";
 import { job } from "@/types";
 import { useApi } from "@/hooks/useApi";
@@ -53,7 +53,7 @@ interface Ijobs {
 }
 
 const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
-  const api = useApi()
+  const api = useApi();
   const { user } = useContext(UserContext) as any;
   const {
     isPending: loadingResume,
@@ -83,7 +83,7 @@ const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
         <div className="flex justify-between items-start gap-4">
           <div className="flex gap-4 flex-1 min-w-0">
             <img
-              src="https://logo.clearbit.com/flutterwave.com"
+              src={job.createdBy.profileImage || "/flutterwave.png"}
               width={100}
               height={100}
               className="xl:w-12 xl:h-12 h-8 w-8 rounded-xl"
@@ -100,7 +100,7 @@ const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
               <div className="flex flex-wrap items-center gap-2 text-sm mb-3">
                 <span className="font-semibold text-gray-900 flex items-center gap-1">
                   <Building2 className="h-3.5 w-3.5 text-gray-400" />
-                 { job?.createdBy?.username}
+                  {job?.createdBy?.username}
                 </span>
                 <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
                 <div className="flex items-center gap-1 text-gray-600">

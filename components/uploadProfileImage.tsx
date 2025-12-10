@@ -31,20 +31,20 @@ interface IJob {
   job: job;
 }
 
-const UploadResume = () => {
+const UploadProfileImage = () => {
   const { user } = useContext(UserContext) as any;
   const [file, setFile] = useState<File | null>();
 
   const submitResume = async () => {
     const formData = new FormData();
-    formData.append("authId", user.id);
+    formData.append("userId", user.id);
 
     if (file) {
-      formData.append("CV", file);
+      formData.append("file", file);
     }
 
     const response = await axios.post(
-      "https://jobsmart-backend.onrender.com/api/v1/users/resume",
+      "https://jobsmart-backend.onrender.com/api/v1/users/profile-image",
       formData,
       {
         headers: {
@@ -65,10 +65,10 @@ const UploadResume = () => {
           </div>
           <div className="flex-1 items-start justify-start">
             <DialogTitle className="lg:text-2xl text-[16px] font-bold text-gray-900">
-              Upload CV
+              Udpate Profile Picture
             </DialogTitle>
             <DialogDescription className="text-gray-600 mt-1">
-              Upload your CV to get better user experience.
+              Upload your profile picture
             </DialogDescription>
           </div>
         </div>
@@ -95,7 +95,7 @@ const UploadResume = () => {
                   and drop
                 </p>
                 <p className="text-xs text-gray-500">
-                  PDF, DOC, DOCX (MAX. 10MB)
+                  PNG, JPEG, JPG (MAX. 10MB)
                 </p>
                 {file && (
                   <div className="mt-3 flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-gray-200">
@@ -118,7 +118,7 @@ const UploadResume = () => {
 
           <Button
             onClick={submitResume}
-            className="w-full h-11 bg-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+            className="w-full h-11  bg-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
             disabled={!file}
           >
             <SendHorizontal className="h-4 w-4 mr-2" />
@@ -130,4 +130,4 @@ const UploadResume = () => {
   );
 };
 
-export default UploadResume;
+export default UploadProfileImage

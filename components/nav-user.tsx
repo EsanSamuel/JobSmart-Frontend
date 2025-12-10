@@ -7,6 +7,7 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
+  Upload,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -31,6 +32,8 @@ import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "./ui/button";
+import UploadProfileImage from "./uploadProfileImage";
+import { Dialog, DialogTrigger } from "./ui/dialog";
 
 export function NavUser({
   user,
@@ -91,7 +94,7 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
 
-            <DropdownMenu>
+            {/*} <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="icon">
                   <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
@@ -111,17 +114,24 @@ export function NavUser({
                 </DropdownMenuItem>
               </DropdownMenuContent>
               {theme}
-            </DropdownMenu>
+            </DropdownMenu>*/}
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
+
+              <Dialog>
+                <DialogTrigger asChild>
+                  <p className="focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
+                    <Upload />
+                    Upload profile image
+                  </p>
+                </DialogTrigger>
+                <UploadProfileImage />
+              </Dialog>
+
               <DropdownMenuItem>
                 <Bell />
                 Notifications
