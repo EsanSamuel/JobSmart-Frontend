@@ -64,10 +64,10 @@ const CompanyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
         <div className="flex justify-between items-start gap-4">
           <div className="flex gap-4 flex-1 min-w-0">
             <img
-              src={job.createdBy.profileImage || "/flutterwave.png"}
+              src={job?.createdBy?.profileImage || "/flutterwave.png"}
               width={100}
               height={100}
-              className="w-12 h-12 rounded-xl"
+              className="w-12 h-12 object-contain rounded-xl"
               alt=""
             />
 
