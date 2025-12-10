@@ -93,7 +93,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     error: recommendedJobsError,
     data: AIRecommendedJobs,
   } = useQuery({
-    queryKey: ["recommended_jobs", session?.user?.id],
+    queryKey: ["ai_recommended_jobs", session?.user?.id],
     queryFn: async () => {
       const response = await api.get(
         `/api/v1/jobs/ai-recommedation/${session?.user?.id}`

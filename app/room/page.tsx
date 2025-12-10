@@ -274,12 +274,12 @@ const Page = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-4 pt-6">
-            <div className="bg-white rounded-lg p-4 shadow-sm">
+            <div className="bg-white rounded-lg p-4 shadow-sm flex flex-col items-center justify-center">
               <Users className="h-6 w-6 text-blue-600 mb-2" />
               <h3 className="font-semibold text-gray-900 text-sm">Connect</h3>
               <p className="text-xs text-gray-600 mt-1">Chat with employers</p>
             </div>
-            <div className="bg-white rounded-lg p-4 shadow-sm">
+            <div className="bg-white rounded-lg p-4 shadow-sm flex flex-col items-center justify-center">
               <Clock className="h-6 w-6 text-indigo-600 mb-2" />
               <h3 className="font-semibold text-gray-900 text-sm">Real-time</h3>
               <p className="text-xs text-gray-600 mt-1">Instant messaging</p>

@@ -60,7 +60,7 @@ const Navbar = () => {
   }, [user]);
 
   return (
-    <nav className="border-b border-gray-300 bg-white px-5 xl:px-[12%] py-4 fixed w-full mb-10">
+    <nav className="border-b border-gray-300 bg-white px-5 xl:px-[12%] py-4 fixed w-full mb-10 z-10">
       <div className="flex items-center justify-between">
         <Link href="/">
           <h1 className="text-2xl font-bold text-blue-600 flex items-center">
@@ -235,7 +235,7 @@ const Navbar = () => {
                         <DropdownMenuItem>Support</DropdownMenuItem>
                         <DropdownMenuItem disabled>API</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => signOut()}>
                           Log out
                           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                         </DropdownMenuItem>

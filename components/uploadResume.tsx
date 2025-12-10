@@ -44,7 +44,7 @@ const UploadResume = () => {
     }
 
     const response = await axios.post(
-      "http://localhost:5000/api/v1/users/resume",
+      "https://jobsmart-backend.onrender.com/api/v1/users/resume",
       formData,
       {
         headers: {

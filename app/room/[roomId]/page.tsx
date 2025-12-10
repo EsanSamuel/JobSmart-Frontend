@@ -242,7 +242,6 @@ export default function ChatRoom() {
 
   return (
     <div className="relative flex flex-col h-screen bg-gray-50">
-      {/* Header */}
       <div className="shrink-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
           <button className="lg:hidden p-2 hover:bg-gray-100 rounded-full transition-colors">
@@ -415,7 +414,7 @@ export default function ChatRoom() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 shadow-lg">
+      <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 shadow-lg w-full flex items-center justify-center">
         {previewFiles.length > 0 && (
           <div className="grid xl:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-2 w-80">
             {previewFiles.map((url) => (

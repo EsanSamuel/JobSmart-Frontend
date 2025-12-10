@@ -105,7 +105,7 @@ const ApplicantDataModal = ({ match, job }: { match: Match; job: any }) => {
           <div className="w-12 h-12 rounded-xl bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
             <User className="h-6 w-6 text-white" />
           </div>
-          <div className="flex-1 items-start justify-start">
+          <div className="flex-1 items-start justify-start text-start">
             <DialogTitle className="lg:text-2xl text-[16px] font-bold text-gray-900">
               {match?.user?.username}
             </DialogTitle>

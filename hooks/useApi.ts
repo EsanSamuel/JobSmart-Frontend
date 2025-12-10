@@ -3,6 +3,8 @@ import { useSession } from "next-auth/react";
 import { useMemo } from "react";
 import axios from "axios";
 
+//https://jobsmart-backend.onrender.com
+
 export function useApi() {
   const { data: session } = useSession();
 
