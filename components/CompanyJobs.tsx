@@ -112,10 +112,6 @@ const CompanyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
               </div>
             </div>
           </div>
-
-          <button className="transition-all p-2 rounded-lg text-gray-800">
-            <Edit className="h-5 w-5" />
-          </button>
         </div>
       </CardHeader>
 

@@ -291,7 +291,6 @@ const Compatibility = ({ job }: IJob) => {
                 value={match?.matchPercentage as number}
                 text={`${match?.matchPercentage}%`}
               />
-              ;
             </div>
 
             <div className="flex flex-col gap-3">

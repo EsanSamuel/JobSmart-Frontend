@@ -135,7 +135,7 @@ export default function Page() {
               <p className="text-sm text-gray-600 font-medium">Accepted</p>
             </div>
           </div>
-          <div className="flex flex-col w-full  lg:p-10 p-5 min-h-0 ">
+          <div className="flex flex-col w-full  lg:p-10 p-0 min-h-0 ">
             <div className="pb-5">
               <h1 className="text-2xl font-bold">Jobs listed</h1>
             </div>
