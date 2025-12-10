@@ -52,7 +52,7 @@ export default function Page({ children }: { children: React.ReactNode }) {
             </Breadcrumb>
           </header>
         )}
-        <div className="flex flex-1 flex-col gap-4 p-4">
+        <div className="flex flex-1 flex-col gap-4 md:p-4 p-0">
           <div className="bg-muted/50 aspect-video h-12 w-full rounded-lg">
             {children}
           </div>
