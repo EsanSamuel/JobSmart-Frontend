@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     }
 
     const { contentType, fileName, size } = validation.data;
-    const uniqueKey = `${uuidu4()}-${fileName}`;
+    const uniqueKey = `${uuidu4()}=${fileName}`;
 
     const command = new PutObjectCommand({
       Bucket: process.env.S3_BUCKET_NAME,

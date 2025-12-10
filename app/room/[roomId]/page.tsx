@@ -232,6 +232,14 @@ export default function ChatRoom() {
     }, 3000);
   };
 
+  const UrlName = (url: string) => {
+    console.log(url)
+    const pdfWithUUID = url.split("/").pop();
+    const pdfName = pdfWithUUID?.split("=")[1];
+    console.log(pdfName)
+    return pdfName;
+  };
+
   if (isPending) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50">
@@ -354,7 +362,7 @@ export default function ChatRoom() {
                                       <path d="M6 14h8v1H6v-1zm0-2h8v1H6v-1zm0-2h8v1H6v-1z" />
                                     </svg>
                                     <span className="text-xs text-red-700 font-medium text-center truncate w-full">
-                                      PDF Document
+                                      {UrlName(url)}
                                     </span>
                                   </a>
                                 ) : url.endsWith(".mp4") ? (
@@ -385,7 +393,7 @@ export default function ChatRoom() {
                                       />
                                     </svg>
                                     <span className="text-xs text-gray-700 font-medium text-center truncate w-full">
-                                      File
+                                       {UrlName(url)}
                                     </span>
                                   </a>
                                 )}
