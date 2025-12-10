@@ -256,7 +256,7 @@ export default function ChatRoom() {
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </button>
           {roomName()?.profileImage ? (
-            <Avatar className="object-contain">
+            <Avatar className="object-cover">
               <AvatarImage src={roomName()?.profileImage} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
