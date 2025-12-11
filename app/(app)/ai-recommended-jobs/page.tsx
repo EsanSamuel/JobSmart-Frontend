@@ -2,7 +2,15 @@
 import React, { useContext, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Ban, Bookmark, DollarSign, MapPin, Search, Users } from "lucide-react";
+import {
+  Ban,
+  Bookmark,
+  DollarSign,
+  Loader2,
+  MapPin,
+  Search,
+  Users,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -23,7 +31,9 @@ import UploadResume from "@/components/uploadResume";
 import { job } from "@/types";
 
 const Page = () => {
-  const { AIRecommendedJobs, user } = useContext(UserContext) as any;
+  const { AIRecommendedJobs, user, loadingRecommendedJobs } = useContext(
+    UserContext
+  ) as any;
   //const [selectedJob, setSelectedJob] = useState(AIRecommendedJobs[0]);
 
   if (!user?.Resume[0]) {
@@ -44,6 +54,18 @@ const Page = () => {
       </div>
     );
   }
+
+  if (loadingRecommendedJobs) {
+    return (
+      <div className="h-[calc(100vh-73px)] flex flex-col mt-15">
+        <div className="flex flex-col items-center gap-3 mt-20">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+          <p className="text-gray-500">Loading recommendations...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Navbar />
@@ -70,7 +92,9 @@ const Page = () => {
                     <div className="flex flex-row gap-2 items-center">
                       <>
                         <img
-                          src={job?.createdBy?.profileImage || "/flutterwave.png"}
+                          src={
+                            job?.createdBy?.profileImage || "/flutterwave.png"
+                          }
                           width={100}
                           height={100}
                           className="xl:w-12 xl:h-12 object-cover h-8 w-8 rounded-xl"

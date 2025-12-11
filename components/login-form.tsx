@@ -61,7 +61,10 @@ export function LoginForm({
   const LoginWithGoogle = async () => {
     setIsLoading2(true);
     try {
-      await signIn("google");
+      const res = await signIn("google");
+      if (res?.ok) {
+        toast.success("Login successful!");
+      }
     } catch (error) {
       console.log(error);
     } finally {

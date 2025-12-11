@@ -88,6 +88,13 @@ const Page = () => {
     return name?.[0]?.username || "Unknown";
   };
 
+  const roomImage = (index: number) => {
+    const name = rooms[index].users?.filter(
+      (user: user) => user.id !== session?.user.id
+    );
+    return name?.[0]?.profileImage || "Unknown";
+  };
+
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -220,6 +227,7 @@ const Page = () => {
                   >
                     {/* Avatar */}
                     <Avatar className="h-12 w-12 shrink-0">
+                      <AvatarImage src={roomImage(index)} alt="" />
                       <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-semibold">
                         {getInitials(otherUserName)}
                       </AvatarFallback>

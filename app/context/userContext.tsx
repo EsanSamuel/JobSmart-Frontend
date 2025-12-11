@@ -14,6 +14,7 @@ interface IUser {
   matchedJobs: match;
   AIRecommendedJobs: job[];
   loadingJobs: boolean;
+  loadingRecommendedJobs: boolean;
 }
 
 export const UserContext = createContext<IUser | null>(null);
@@ -113,6 +114,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
         appliedJobs,
         matchedJobs,
         AIRecommendedJobs,
+        loadingRecommendedJobs,
       }}
     >
       {children}

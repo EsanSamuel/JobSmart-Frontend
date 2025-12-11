@@ -164,6 +164,7 @@ export default function ChatRoom() {
         headers: { "Content-Type": file.type },
         body: file,
       });
+      console.log("presigned url:",presignedUrl)
       console.log(permanentUrl);
       Files.push(permanentUrl);
     }
