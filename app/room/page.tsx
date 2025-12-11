@@ -227,7 +227,7 @@ const Page = () => {
                   >
                     {/* Avatar */}
                     <Avatar className="h-12 w-12 shrink-0">
-                      <AvatarImage src={roomImage(index)} alt="" />
+                      <AvatarImage src={roomImage(index)} alt="" className="object-cover" />
                       <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-semibold">
                         {getInitials(otherUserName)}
                       </AvatarFallback>

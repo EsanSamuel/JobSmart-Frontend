@@ -36,6 +36,17 @@ const Page = () => {
   ) as any;
   //const [selectedJob, setSelectedJob] = useState(AIRecommendedJobs[0]);
 
+  if (loadingRecommendedJobs) {
+    return (
+      <div className="h-[calc(100vh-73px)] flex flex-col mt-15">
+        <div className="flex flex-col items-center gap-3 mt-20">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+          <p className="text-gray-500">Loading recommendations...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!user?.Resume[0]) {
     return (
       <div>
@@ -50,17 +61,6 @@ const Page = () => {
             </DialogTrigger>
             <UploadResume />
           </Dialog>
-        </div>
-      </div>
-    );
-  }
-
-  if (loadingRecommendedJobs) {
-    return (
-      <div className="h-[calc(100vh-73px)] flex flex-col mt-15">
-        <div className="flex flex-col items-center gap-3 mt-20">
-          <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-          <p className="text-gray-500">Loading recommendations...</p>
         </div>
       </div>
     );

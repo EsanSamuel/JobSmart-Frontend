@@ -164,7 +164,7 @@ export default function ChatRoom() {
         headers: { "Content-Type": file.type },
         body: file,
       });
-      console.log("presigned url:",presignedUrl)
+      console.log("presigned url:", presignedUrl);
       console.log(permanentUrl);
       Files.push(permanentUrl);
     }
@@ -234,10 +234,10 @@ export default function ChatRoom() {
   };
 
   const UrlName = (url: string) => {
-    console.log(url)
+    console.log(url);
     const pdfWithUUID = url.split("/").pop();
     const pdfName = pdfWithUUID?.split("=")[1];
-    console.log(pdfName)
+    console.log(pdfName);
     return pdfName;
   };
 
@@ -258,7 +258,10 @@ export default function ChatRoom() {
           </button>
           {roomName()?.profileImage ? (
             <Avatar className="object-cover">
-              <AvatarImage src={roomName()?.profileImage} />
+              <AvatarImage
+                src={roomName()?.profileImage}
+                className="object-cover"
+              />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           ) : (
@@ -301,7 +304,10 @@ export default function ChatRoom() {
                     <>
                       {roomName()?.profileImage ? (
                         <Avatar className="object-cover">
-                          <AvatarImage src={roomName()?.profileImage} />
+                          <AvatarImage
+                            src={roomName()?.profileImage}
+                            className="object-cover"
+                          />
                           <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                       ) : (
@@ -394,7 +400,7 @@ export default function ChatRoom() {
                                       />
                                     </svg>
                                     <span className="text-xs text-gray-700 font-medium text-center truncate w-full">
-                                       {UrlName(url)}
+                                      {UrlName(url)}
                                     </span>
                                   </a>
                                 )}
