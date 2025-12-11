@@ -5,6 +5,7 @@ import Provider from "@/components/Provider";
 import UserProvider from "@/app/context/userContext";
 import QueryProvider from "@/components/QueryProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +46,7 @@ export default function RootLayout({
                 disableTransitionOnChange
               >*/}
                 {children}
+                <Toaster />
               {/*</ThemeProvider>*/}
             </UserProvider>
           </QueryProvider>

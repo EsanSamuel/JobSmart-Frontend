@@ -20,6 +20,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useApi } from "@/hooks/useApi";
+import { job, resume } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { Briefcase, CheckCircle, Clock, Loader2, Users } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -28,6 +29,10 @@ import { useEffect, useState } from "react";
 export default function Page() {
   const api = useApi();
   const { data: session } = useSession();
+
+  const [totalAcceptedApplicants, setTotalAcceptedApplicants] = useState(0);
+  const [totalShortlistedApplicants, setTotalShortlistedApplicants] =
+    useState(0);
   const [totalApplicants, setTotalApplicants] = useState(0);
   const scrollbarStyles = {
     scrollbarWidth: "thin",
@@ -60,6 +65,36 @@ export default function Page() {
       }
     };
     getTotalApplicants();
+  }, [jobs]);
+
+  useEffect(() => {
+    const getTotalShorlistedApplicants = () => {
+      if (jobs) {
+        let acceptedApplicants = 0;
+        for (const job of jobs) {
+          acceptedApplicants += job?.Resume?.filter(
+            (resume: resume) => resume.status === "ShortListed"
+          ).length;
+          setTotalShortlistedApplicants(acceptedApplicants);
+        }
+      }
+    };
+    getTotalShorlistedApplicants();
+  }, [jobs]);
+
+  useEffect(() => {
+    const getTotalAcceptedApplicants = () => {
+      if (jobs) {
+        let acceptedApplicants = 0;
+        for (const job of jobs) {
+          acceptedApplicants += job?.Resume?.filter(
+            (resume: resume) => resume.status === "Accepted"
+          ).length;
+          setTotalAcceptedApplicants(acceptedApplicants);
+        }
+      }
+    };
+    getTotalAcceptedApplicants();
   }, [jobs]);
 
   return (
@@ -119,10 +154,10 @@ export default function Page() {
                   <CheckCircle className="h-6 w-6 text-amber-600" />
                 </div>
               </div>
-              <p className="text-3xl font-bold text-gray-900 mb-1">32</p>
-              <p className="text-sm text-gray-600 font-medium">
-                Interview schedule
+              <p className="text-3xl font-bold text-gray-900 mb-1">
+                {totalShortlistedApplicants}
               </p>
+              <p className="text-sm text-gray-600 font-medium">Shortlisted</p>
             </div>
 
             <div className="bg-white rounded-xl border border-gray-300 p-6 hover:shadow-md transition-shadow">
@@ -131,7 +166,9 @@ export default function Page() {
                   <CheckCircle className="h-6 w-6 text-pink-600" />
                 </div>
               </div>
-              <p className="text-3xl font-bold text-gray-900 mb-1">12</p>
+              <p className="text-3xl font-bold text-gray-900 mb-1">
+                {totalAcceptedApplicants}
+              </p>
               <p className="text-sm text-gray-600 font-medium">Accepted</p>
             </div>
           </div>

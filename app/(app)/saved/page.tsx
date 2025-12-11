@@ -42,8 +42,10 @@ import {
 } from "@/components/ui/select";
 import MyJobsCard from "@/components/MyJobsCard";
 import { UserContext } from "@/app/context/userContext";
+import { useApi } from "@/hooks/useApi";
 
 const Page = () => {
+  const api = useApi();
   const { bookmarks, appliedJobs, matchedJobs } = useContext(
     UserContext
   ) as any;
@@ -76,6 +78,14 @@ const Page = () => {
   useEffect(() => {
     console.log(bookmarks);
   }, [bookmarks]);
+
+  const handleDeleteBookmark = async (bookmarkId: string) => {
+    try {
+      const response = await api.post(`/api/v1/bookmarks/${bookmarkId}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-linear-to-b from-gray-50 to-white">

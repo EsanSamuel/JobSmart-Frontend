@@ -29,6 +29,7 @@ import { job, match } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useApi } from "@/hooks/useApi";
 import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 interface IJob {
   job: job;
@@ -43,6 +44,7 @@ const Compatibility = ({ job }: IJob) => {
   const [match, setMatch] = useState<match>();
   const [progress, setProgress] = React.useState(13);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoading2, setIsLoading2] = useState(false);
 
   const {
     isPending: loadingResume,
@@ -114,6 +116,11 @@ const Compatibility = ({ job }: IJob) => {
     );
 
     console.log(response.data.data);
+    if (response.status === 201 || response.status === 200){
+      toast.success("You have applied successfully!");
+    } else {
+      toast.error("Something went wrong");
+    }
   };
 
   const matchProfileResume = async () => {
@@ -343,8 +350,19 @@ const Compatibility = ({ job }: IJob) => {
           You have already applied
         </Button>
       ) : (
-        <Button className="w-full mt-5" onClick={submitResume}>
-          Apply
+        <Button
+          className="w-full mt-5"
+          onClick={submitResume}
+          disabled={isLoading2}
+        >
+          {isLoading2 ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+              Applying
+            </>
+          ) : (
+            "Apply"
+          )}
         </Button>
       )}
     </DialogContent>

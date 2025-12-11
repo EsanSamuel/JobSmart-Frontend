@@ -26,6 +26,7 @@ import { UserContext } from "@/app/context/userContext";
 import axios from "axios";
 import { job } from "@/types";
 import { useApi } from "@/hooks/useApi";
+import { toast } from "sonner";
 
 interface IJob {
   job: job;
@@ -54,6 +55,11 @@ const UploadResume = () => {
     );
 
     console.log(response.data.data);
+    if (response.status === 201 || response.status === 200) {
+      toast.success("Resume uploaded!");
+    } else {
+      toast.error("Something went wrong");
+    }
   };
 
   return (

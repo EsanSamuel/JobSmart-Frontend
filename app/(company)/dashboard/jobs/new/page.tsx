@@ -28,6 +28,7 @@ import {
 import { UserContext } from "@/app/context/userContext";
 import { useApi } from "@/hooks/useApi";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Page = () => {
   const api = useApi();
@@ -77,8 +78,11 @@ const Page = () => {
         jobType: job.jobType,
       });
       console.log(response.data.data);
-      if (response.data.data) {
+      if (response.status === 201) {
+        toast.success("You have applied successfully!");
         router.push("/dashboard");
+      } else {
+        toast.error("Something went wrong");
       }
     } catch (error) {
       console.log(error);

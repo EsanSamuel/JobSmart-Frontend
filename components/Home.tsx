@@ -211,9 +211,6 @@ const Home = () => {
   }
 
   const handleBookmark = async () => {
-    if (!selectedJob) {
-      return null;
-    }
     try {
       const response = await api.post("/api/v1/bookmarks", {
         authId: user.id,
@@ -224,6 +221,14 @@ const Home = () => {
       queryClient.invalidateQueries({
         queryKey: ["jobbookmarks", selectedJob?.id],
       });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteBookmark = async (bookmarkId: string) => {
+    try {
+      const response = await api.post(`/api/v1/bookmarks/${bookmarkId}`);
     } catch (error) {
       console.log(error);
     }

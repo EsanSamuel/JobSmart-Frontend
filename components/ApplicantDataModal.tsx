@@ -23,6 +23,7 @@ import { UserContext } from "@/app/context/userContext";
 import { Match } from "@/types";
 import { io, Socket } from "socket.io-client";
 import { useApi } from "@/hooks/useApi";
+import { toast } from "sonner";
 
 const ApplicantDataModal = ({ match, job }: { match: Match; job: any }) => {
   const api = useApi();
@@ -45,8 +46,13 @@ const ApplicantDataModal = ({ match, job }: { match: Match; job: any }) => {
   const handleAddToShortlist = async () => {
     setIsLoading(true);
     try {
-      await api.patch(`/api/v1/jobs/shortlist/${match.id}`);
+      const response = await api.patch(`/api/v1/jobs/shortlist/${match.id}`);
       setIsShortlisted(true);
+      if (response.status === 201 || response.status === 200) {
+        toast.success("Applicant shortlisted");
+      } else {
+        toast.error("Something went wrong");
+      }
     } catch (error) {
       console.error("Error adding to shortlist:", error);
     } finally {
@@ -57,8 +63,13 @@ const ApplicantDataModal = ({ match, job }: { match: Match; job: any }) => {
   const handleAccept = async () => {
     setIsLoading(true);
     try {
-      await api.patch(`/api/v1/jobs/accept/${match.id}`);
+      const response = await api.patch(`/api/v1/jobs/accept/${match.id}`);
       setIsShortlisted(true);
+      if (response.status === 201 || response.status === 200) {
+        toast.success("Applicant accepted!");
+      } else {
+        toast.error("Something went wrong");
+      }
     } catch (error) {
       console.error("Error adding to shortlist:", error);
     } finally {

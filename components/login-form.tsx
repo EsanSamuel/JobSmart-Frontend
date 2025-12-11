@@ -14,6 +14,7 @@ import { signIn, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export function LoginForm({
   className,
@@ -43,9 +44,12 @@ export function LoginForm({
         email,
         password,
       });
+      if (res?.ok) {
+        toast.success("Login successful!");
+      }
       if (res?.error) {
-        console.log(res.error)
-        alert(res.error);
+        console.log(res.error);
+        toast.error(res.error);
       }
     } catch (error) {
       console.log(error);

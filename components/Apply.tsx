@@ -27,6 +27,7 @@ import { UserContext } from "@/app/context/userContext";
 import axios from "axios";
 import { job } from "@/types";
 import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 interface IJob {
   job: job;
@@ -68,6 +69,11 @@ const Apply = ({ job }: IJob) => {
 
     console.log(response.data.data);
     setIsLoading(false);
+    if (response.status === 201 || response.status === 200) {
+      toast.success("You have applied successfully!");
+    } else {
+      toast.error("Something went wrong");
+    }
   };
 
   React.useEffect(() => {
