@@ -216,7 +216,7 @@ const Navbar = () => {
                     </div>
                   </div>
                 )}
-                <Button>Post a Job</Button>
+                {/*<Button>Post a Job</Button>*/}
               </SheetFooter>
             </SheetContent>
           </Sheet>
@@ -346,7 +346,7 @@ const Navbar = () => {
               </DropdownMenu>
             </div>
           )}
-          <Button>Post a Job</Button>
+          {/* <Button>Post a Job</Button>*/}
         </div>
       </div>
     </nav>

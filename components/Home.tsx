@@ -298,14 +298,14 @@ const Home = () => {
         <div className="flex-1 xl:px-[12%] px-5 pb-5 min-h-0">
           <div className="flex gap-6 h-full">
             <div className="flex flex-col w-full lg:w-[45%] xl:w-[420px] min-h-0">
-              <div className="flex justify-between items-center ">
-                <h1 className="lg:text-2xl text-[18px] font-bold mb-4 text-gray-800 shrink-0">
+              <div className="flex justify-between items-center mb-4">
+                <h1 className="lg:text-2xl text-[18px] font-bold  text-gray-800 shrink-0">
                   Explore Jobs
                 </h1>
                 <Dialog>
                   <DialogTrigger asChild className="block md:hidden">
-                    <Button>
-                      <SlidersHorizontal className="text-[10px]" size={5}/>
+                    <Button className="text-[5px] py-1">
+                      <SlidersHorizontal className="text-[5px]" size={5} />
                     </Button>
                   </DialogTrigger>
                   <FilterModal />
