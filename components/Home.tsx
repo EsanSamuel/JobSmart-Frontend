@@ -226,14 +226,6 @@ const Home = () => {
     }
   };
 
-  const handleDeleteBookmark = async (bookmarkId: string) => {
-    try {
-      const response = await api.post(`/api/v1/bookmarks/${bookmarkId}`);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <>
       <style jsx>{`

@@ -113,7 +113,7 @@ const JobCard = ({ job, index, selectedJob, setSelectedJob }: IJob) => {
             />
           </>
           <div className="flex-1">
-            <CardTitle className="text-lg font-semibold text-gray-900 truncate w-40">
+            <CardTitle className="text-lg font-semibold text-gray-900">
               {job.title}
             </CardTitle>
             <CardDescription className="text-sm text-gray-500">
