@@ -267,7 +267,7 @@ const Home = () => {
               <Search className="text-gray-600" />
               <Input
                 type="search"
-                placeholder="Job title, keyword, company"
+                placeholder="Search jobs"
                 onChange={(e) => setSearch(e.target.value)}
                 value={search}
                 className="h-10 outline-none border-none shadow-none focus-visible:ring-0 xl:text text-[13px]"
