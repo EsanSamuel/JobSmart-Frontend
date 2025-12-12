@@ -45,6 +45,7 @@ import {
 } from "@/components/ui/select";
 import CompanyJobDetails from "./companyJobDetails";
 import { job } from "@/types";
+import { format } from "date-fns";
 
 interface Ijobs {
   job: job;
@@ -108,7 +109,12 @@ const CompanyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
 
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <Calendar className="h-3.5 w-3.5" />
-                <span>Listed on Tuesday, Oct 28, 2025</span>
+                <span>
+                  {format(
+                    new Date(job.createdAt),
+                    "'Listed on' EEEE, MMM d, yyyy"
+                  )}
+                </span>
               </div>
             </div>
           </div>

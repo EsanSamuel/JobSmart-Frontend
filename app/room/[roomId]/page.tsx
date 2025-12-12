@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useApi } from "@/hooks/useApi";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { format } from "date-fns";
 
 export default function ChatRoom() {
   const api = useApi();
@@ -283,6 +284,13 @@ export default function ChatRoom() {
       </div>
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 pb-24">
+        <p className="text-[12px] text-gray text-center text-gray-600">
+          {" "}
+          {format(
+            new Date(room.createdAt),
+            "'Chat started on' EEEE, MMM d, yyyy"
+          )}
+        </p>
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full text-gray-400">
             No messages yet. Start the conversation!

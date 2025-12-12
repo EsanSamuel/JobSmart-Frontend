@@ -15,6 +15,7 @@ import Compatability from "./check-compatability";
 import {
   Ban,
   Bookmark,
+  BookmarkCheck,
   Building2,
   Clock,
   DollarSign,
@@ -35,7 +36,7 @@ interface IMobileJobDetails {
 }
 
 const MobileJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
-  const api = useApi()
+  const api = useApi();
   const { user } = useContext(UserContext) as any;
   const {
     isPending: loadingResume,
@@ -48,6 +49,20 @@ const MobileJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
       console.log("Applied", response.data.data);
       return response.data.data.result;
     },
+  });
+
+  const {
+    isPending: loadingBookmarks,
+    error: bookmarkError,
+    data: jobBookmarks,
+  } = useQuery({
+    queryKey: ["jobbookmarks", job?.id],
+    queryFn: async () => {
+      if (!job?.id) return null;
+      const response = await api.get(`/api/v1/bookmarks/job/$job?.id}`);
+      return response.data.data;
+    },
+    enabled: !!job?.id,
   });
 
   const hasApplied = useMemo(() => {
@@ -73,6 +88,14 @@ const MobileJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
       console.log(error);
     }
   };
+
+  const isBookmarked = useMemo(() => {
+    if (!jobBookmarks || !user?.id) return false;
+    const bookmarked = jobBookmarks?.map((bookmark: any) => bookmark?.userId);
+    console.log("Bookmarked users:", bookmarked);
+    return bookmarked?.includes(user?.id);
+  }, [jobBookmarks, user?.id]);
+
   return (
     <DrawerContent
       className={`${
@@ -153,12 +176,20 @@ const MobileJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
                   )}
                 </div>
               )}
-              <Button
-                className="bg-pink-400 hover:bg-pink-500"
-                onClick={handleBookmark}
-              >
-                <Bookmark size={20} />
-              </Button>
+
+              {isBookmarked ? (
+                <Button className="bg-blue-500 hover:bg-blue-600">
+                  <BookmarkCheck size={20} className="fill-current" />
+                </Button>
+              ) : (
+                <Button
+                  className="bg-pink-400 hover:bg-pink-500"
+                  onClick={handleBookmark}
+                >
+                  <Bookmark size={20} />
+                </Button>
+              )}
+
               <Button className="bg-amber-300 hover:bg-amber-400">
                 <Ban size={20} />
               </Button>

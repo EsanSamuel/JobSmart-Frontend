@@ -44,6 +44,7 @@ import { useQuery } from "@tanstack/react-query";
 import { UserContext } from "@/app/context/userContext";
 import { job } from "@/types";
 import { useApi } from "@/hooks/useApi";
+import { format } from "date-fns";
 
 interface Ijobs {
   job: job & { createdBy: any };
@@ -138,7 +139,10 @@ const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
 
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <Calendar className="h-3.5 w-3.5" />
-                <span>Saved on Tuesday, Oct 28, 2025</span>
+                {format(
+                  new Date(job.createdAt),
+                  "'Saved on' EEEE, MMM d, yyyy"
+                )}
               </div>
             </div>
           </div>
