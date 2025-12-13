@@ -46,6 +46,8 @@ import {
 import CompanyJobDetails from "./companyJobDetails";
 import { job } from "@/types";
 import { format } from "date-fns";
+import { useApi } from "@/hooks/useApi";
+import { toast } from "sonner";
 
 interface Ijobs {
   job: job;
@@ -55,6 +57,11 @@ interface Ijobs {
 }
 
 const CompanyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
+  const api = useApi();
+  const handleDelete = async (jobId: string) => {
+    await api.delete(`/api/v1/jobs/${jobId}`);
+    toast.success("Job deleted!");
+  };
   return (
     <Card
       key={index}
@@ -82,7 +89,7 @@ const CompanyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
               <div className="flex flex-wrap items-center gap-2 text-sm mb-3">
                 <span className="font-semibold text-gray-900 flex items-center gap-1">
                   <Building2 className="h-3.5 w-3.5 text-gray-400" />
-                  {job.company}
+                  {job?.createdBy.username}
                 </span>
                 <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
                 <div className="flex items-center gap-1 text-gray-600">
@@ -139,7 +146,7 @@ const CompanyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
           size="sm"
           variant="ghost"
           className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded-full gap-1"
-          onClick={(e) => e.stopPropagation()}
+          onClick={() => handleDelete(job.id)}
         >
           <Trash2 className="h-4 w-4" />
           Delete

@@ -42,12 +42,12 @@ import {
 } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { UserContext } from "@/app/context/userContext";
-import { job } from "@/types";
+import { job, user } from "@/types";
 import { useApi } from "@/hooks/useApi";
 import { format } from "date-fns";
 
 interface Ijobs {
-  job: job & { createdBy: any };
+  job: job & { createdBy: user };
   index: number;
   matchScore: number;
   setSelectedJob?: any;
