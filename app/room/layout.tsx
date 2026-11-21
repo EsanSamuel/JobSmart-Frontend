@@ -1,62 +1,32 @@
 "use client";
-import { AppSidebar } from "@/components/app-sidebar";
-import { MessageSidebar } from "@/components/message-sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { UserContext } from "../context/userContext";
-import { useContext } from "react";
-import { usePathname } from "next/navigation";
 
-export default function Page({ children }: { children: React.ReactNode }) {
-  const { user } = useContext(UserContext) as any;
-  const pathname = usePathname();
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { MessageSidebar } from "@/components/message-sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+
+export default function MessagesLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "350px",
-        } as React.CSSProperties
-      }
+      className="!h-dvh !min-h-0 overflow-hidden"
+      style={{ "--sidebar-width": "320px" } as React.CSSProperties}
     >
       <MessageSidebar />
-      <SidebarInset>
-        {pathname === "/room" && (
-          <header className="bg-background sticky top-0 flex shrink-0 items-center gap-2 border-b p-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">All Inboxes</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Inbox</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </header>
-        )}
-        <div className="flex flex-1 flex-col gap-4 md:p-4 p-0">
-          <div className="bg-muted/50 aspect-video h-12 w-full rounded-lg">
-            {children}
+      <SidebarInset className="min-h-0 overflow-hidden">
+        <header className="z-10 flex h-14 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6">
+          <div className="flex items-center gap-2">
+            <SidebarTrigger className="md:hidden" aria-label="Open conversations" />
+            <span className="text-sm font-semibold text-slate-900">Messages</span>
           </div>
-        </div>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950"
+          >
+            <ArrowLeft className="size-4" />
+            <span>Back to jobs</span>
+          </Link>
+        </header>
+        <div className="min-h-0 flex-1 overflow-hidden">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

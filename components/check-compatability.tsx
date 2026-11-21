@@ -12,14 +12,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { UserContext } from "@/app/context/userContext";
@@ -30,6 +27,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useApi } from "@/hooks/useApi";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
+import { responseList } from "@/lib/response";
 
 interface IJob {
   job: job;
@@ -42,9 +40,12 @@ const Compatibility = ({ job }: IJob) => {
   const [file, setFile] = useState<File | null>();
   const [isMatched, setIsMatched] = useState(false);
   const [match, setMatch] = useState<match>();
-  const [progress, setProgress] = React.useState(13);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoading2, setIsLoading2] = useState(false);
+  const [isProfileMatching, setIsProfileMatching] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [fileError, setFileError] = useState("");
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const {
     isPending: loadingResume,
@@ -54,8 +55,7 @@ const Compatibility = ({ job }: IJob) => {
     queryKey: ["resumes", job?.id],
     queryFn: async () => {
       const response = await api.get(`/api/v1/jobs/resume/${job?.id}`);
-      console.log("Applied", response.data.data);
-      return response.data.data.result;
+      return responseList(response);
     },
   });
 
@@ -65,30 +65,30 @@ const Compatibility = ({ job }: IJob) => {
   }, [resumes]);
 
   const matchResume = async () => {
-    if (!job.id) {
-      return null;
-    }
+    if (!job.id || !file || isLoading || isProfileMatching) return;
 
     setIsLoading(true);
-    const formData = new FormData();
-    formData.append("authId", user.id);
-    if (file) {
+    try {
+      const formData = new FormData();
+      formData.append("authId", user.id);
       formData.append("CV", file);
-    }
 
-    const response = await axios.post(
-      `https://jobsmart-backend.onrender.com/api/v1/match/${job.id}`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      const response = await axios.post(
+        `https://jobsmart-backend.onrender.com/api/v1/match/${job.id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
-      }
-    );
-    setIsMatched(true);
-    setMatch(response.data.data);
-    console.log(response.data.data);
-    setIsLoading(false);
+      );
+      setMatch(response.data.data);
+      setIsMatched(true);
+    } catch {
+      toast.error("We couldn’t analyze this resume. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const submitResume = async () => {
@@ -124,35 +124,48 @@ const Compatibility = ({ job }: IJob) => {
   };
 
   const matchProfileResume = async () => {
-    if (!job.id) {
-      return null;
-    }
+    if (!job.id || isLoading || isProfileMatching) return;
 
-    const formData = new FormData();
-    formData.append("authId", user.id);
-    formData.append("resumeId", user.id);
-    if (file) {
-      formData.append("CV", file);
-    }
+    setIsProfileMatching(true);
+    try {
+      const formData = new FormData();
+      formData.append("authId", user.id);
+      formData.append("resumeId", user.id);
 
-    const response = await axios.post(
-      `https://jobsmart-backend.onrender.com/api/v1/match/${job.id}`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      const response = await axios.post(
+        `https://jobsmart-backend.onrender.com/api/v1/match/${job.id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
-      }
-    );
-    setIsMatched(true);
-    setMatch(response.data.data);
-    console.log(response.data.data);
+      );
+      setMatch(response.data.data);
+      setIsMatched(true);
+    } catch {
+      toast.error("We couldn’t analyze your profile resume. Please try again.");
+    } finally {
+      setIsProfileMatching(false);
+    }
   };
 
-  React.useEffect(() => {
-    const timer = setTimeout(() => setProgress(66), 500);
-    return () => clearTimeout(timer);
-  }, []);
+  const selectResume = (candidate?: File) => {
+    if (!candidate) return;
+    const extension = candidate.name.split(".").pop()?.toLowerCase();
+    if (!extension || !["pdf", "doc", "docx"].includes(extension)) {
+      setFile(null);
+      setFileError("Choose a PDF, DOC, or DOCX file.");
+      return;
+    }
+    if (candidate.size > 10 * 1024 * 1024) {
+      setFile(null);
+      setFileError("This file is larger than 10 MB. Choose a smaller resume.");
+      return;
+    }
+    setFile(candidate);
+    setFileError("");
+  };
 
   return (
     <DialogContent className="sm:max-w-[500px]">
@@ -181,59 +194,76 @@ const Compatibility = ({ job }: IJob) => {
                 <span>Upload Resume</span>
               </div>
 
-              <div className="relative">
-                <label
-                  htmlFor="pdf"
-                  className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors group"
-                >
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <div className="w-12 h-12 mb-3 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                      <FileText className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <p className="mb-2 text-sm text-gray-600 font-medium">
-                      <span className="text-blue-600">Click to upload</span> or
-                      drag and drop
+              <label
+                htmlFor="compatibility-resume-file"
+                onDragEnter={(event) => {
+                  event.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragOver={(event) => event.preventDefault()}
+                onDragLeave={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                    setIsDragging(false);
+                  }
+                }}
+                onDrop={(event) => {
+                  event.preventDefault();
+                  setIsDragging(false);
+                  selectResume(event.dataTransfer.files?.[0]);
+                }}
+                className={`group flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-4 py-5 text-center transition-colors ${
+                  isDragging
+                    ? "border-blue-500 bg-blue-50"
+                    : file
+                      ? "border-emerald-300 bg-emerald-50/60 hover:bg-emerald-50"
+                      : "border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-blue-50/60"
+                }`}
+              >
+                <div className={`mb-3 flex size-11 items-center justify-center rounded-xl transition-colors ${file ? "bg-emerald-100 text-emerald-700" : "bg-white text-blue-700 shadow-sm group-hover:bg-blue-100"}`}>
+                  {file ? <CheckCircle2 className="size-5" /> : <Upload className="size-5" />}
+                </div>
+                {file ? (
+                  <>
+                    <p className="max-w-full truncate text-sm font-semibold text-slate-800">{file.name}</p>
+                    <p className="mt-1 text-xs text-slate-500">
+                      {(file.size / (1024 * 1024)).toFixed(1)} MB · Click or drop to replace
                     </p>
-                    <p className="text-xs text-gray-500">
-                      PDF, DOC, DOCX (MAX. 10MB)
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm font-medium text-slate-700">
+                      <span className="text-blue-700">Choose a resume</span> or drag it here
                     </p>
-                    {file && (
-                      <div className="mt-3 flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-gray-200">
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        <span className="text-sm text-gray-700 font-medium">
-                          {file.name}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <Input
-                    id="pdf"
-                    type="file"
-                    className="hidden"
-                    accept=".pdf,.doc,.docx"
-                    onChange={(e) => setFile(e.target.files?.[0] || null)}
-                  />
-                </label>
-              </div>
-
-              {isLoading ? (
-                <Button
-                  className="w-full h-11 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
-                  disabled={isLoading}
-                >
-                  <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
-                  Analyzing...
-                </Button>
-              ) : (
-                <Button
-                  className="w-full h-11 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
-                  disabled={!file}
-                  onClick={matchResume}
-                >
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Analyze with AI
-                </Button>
+                    <p className="mt-1.5 text-xs text-slate-500">PDF, DOC, or DOCX · Up to 10 MB</p>
+                  </>
+                )}
+                <Input
+                  ref={fileInputRef}
+                  id="compatibility-resume-file"
+                  type="file"
+                  className="sr-only"
+                  accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  onChange={(event) => selectResume(event.target.files?.[0])}
+                  aria-describedby={fileError ? "resume-file-error" : undefined}
+                />
+              </label>
+              {fileError && (
+                <p id="resume-file-error" role="alert" className="mt-2 text-sm text-red-600">
+                  {fileError}
+                </p>
               )}
+
+              <Button
+                className="h-11 w-full rounded-xl font-semibold shadow-sm transition-all"
+                disabled={!file || isLoading || isProfileMatching}
+                onClick={matchResume}
+              >
+                {isLoading ? (
+                  <><Loader2 className="mr-2 size-4 animate-spin" />Analyzing resume…</>
+                ) : (
+                  <><Sparkles className="mr-2 size-4" />Analyze with AI</>
+                )}
+              </Button>
             </div>
 
             <div className="relative">
@@ -266,10 +296,15 @@ const Compatibility = ({ job }: IJob) => {
                   </div>
                 </div>
                 <Button
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-10"
+                  className="h-10 w-full rounded-xl"
                   onClick={matchProfileResume}
+                  disabled={isLoading || isProfileMatching}
                 >
-                  Use Profile Resume
+                  {isProfileMatching ? (
+                    <><Loader2 className="mr-2 size-4 animate-spin" />Using profile resume…</>
+                  ) : (
+                    <><FileText className="mr-2 size-4" />Use Profile Resume</>
+                  )}
                 </Button>
               </div>
             </div>

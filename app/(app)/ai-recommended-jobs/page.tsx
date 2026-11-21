@@ -38,10 +38,13 @@ const Page = () => {
 
   if (loadingRecommendedJobs) {
     return (
-      <div className="h-[calc(100vh-73px)] flex flex-col mt-15">
+      <div>
+        <Navbar />
+        <div className="min-h-[calc(100dvh-4rem)] flex flex-col">
         <div className="flex flex-col items-center gap-3 mt-20">
           <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
           <p className="text-gray-500">Loading recommendations...</p>
+        </div>
         </div>
       </div>
     );
@@ -51,7 +54,7 @@ const Page = () => {
     return (
       <div>
         <Navbar />
-        <div className="h-[calc(100vh-73px)] flex flex-col space-y-3 items-center justify-center lg:p-0 p-5">
+        <div className="min-h-[calc(100dvh-4rem)] flex flex-col space-y-3 items-center justify-center lg:p-0 p-5">
           <p className="text-gray-500 text-center">
             Upload your resume to let AI recommend jobs for you!
           </p>
@@ -70,7 +73,7 @@ const Page = () => {
     <div>
       <Navbar />
       <div className="lg:px-[30%] px-5 py-10">
-        <div className="mt-15">
+        <div>
           <h1 className=" font-bold bg-linear-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent text-3xl sm:text-4xl  mb-2">
             Top AI Recommended jobs for you ✨
           </h1>

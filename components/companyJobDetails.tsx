@@ -31,6 +31,7 @@ import { useQuery } from "@tanstack/react-query";
 import { job } from "@/types";
 import { formatDistance, subDays } from "date-fns";
 import { useApi } from "@/hooks/useApi";
+import { responseList } from "@/lib/response";
 
 interface IMobileJobDetails {
   job: job;
@@ -48,11 +49,7 @@ const CompanyJobDetails = ({ job, recommendationPage }: IMobileJobDetails) => {
     queryKey: ["resumes", job?.id],
     queryFn: async () => {
       const response = await api.get(`/api/v1/jobs/resume/${job?.id}`);
-      if (!response) {
-        return [];
-      }
-      console.log("Applied", response.data.data);
-      return response.data.data.result;
+      return responseList(response);
     },
   });
 

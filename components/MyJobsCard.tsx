@@ -45,15 +45,19 @@ import { UserContext } from "@/app/context/userContext";
 import { job, user } from "@/types";
 import { useApi } from "@/hooks/useApi";
 import { format } from "date-fns";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import Apply from "@/components/Apply";
+import { responseList } from "@/lib/response";
 
 interface Ijobs {
   job: job & { createdBy: user };
   index: number;
   matchScore: number;
   setSelectedJob?: any;
+  onRemove?: () => void;
 }
 
-const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
+const MyJobsCard = ({ job, index, matchScore, setSelectedJob, onRemove }: Ijobs) => {
   const api = useApi();
   const { user } = useContext(UserContext) as any;
   const {
@@ -64,9 +68,9 @@ const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
     queryKey: ["resumes", job?.id],
     queryFn: async () => {
       const response = await api.get(`/api/v1/jobs/resume/${job?.id}`);
-      console.log("Applied", response.data.data);
-      return response.data.data.result;
+      return responseList(response);
     },
+    enabled: !!job?.id,
   });
 
   const hasApplied = useMemo(() => {
@@ -76,9 +80,8 @@ const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
   return (
     <Card
       key={index}
-      className="border border-gray-200 hover:shadow-xl hover:border-blue-200 transition-all duration-300 w-full rounded-2xl 
-      cursor-pointer bg-white overflow-hidden group"
-      onClick={() => setSelectedJob(job)}
+      className={`border border-gray-200 hover:shadow-xl hover:border-blue-200 transition-all duration-300 w-full rounded-2xl bg-white overflow-hidden group ${setSelectedJob ? "cursor-pointer" : ""}`}
+      onClick={setSelectedJob ? () => setSelectedJob(job) : undefined}
     >
       <CardHeader className="pb-4">
         <div className="flex justify-between items-start gap-4">
@@ -141,15 +144,28 @@ const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
                 <Calendar className="h-3.5 w-3.5" />
                 {format(
                   new Date(job.createdAt),
-                  "'Saved on' EEEE, MMM d, yyyy"
+                  "'Posted' EEEE, MMM d, yyyy"
                 )}
               </div>
             </div>
           </div>
 
-          <button className="transition-all p-2 rounded-lg text-blue-600 bg-blue-50">
-            <BookmarkCheck className="h-5 w-5 fill-current" />
-          </button>
+          {onRemove ? (
+            <button
+              aria-label="Remove saved job"
+              onClick={(event) => {
+                event.stopPropagation();
+                onRemove();
+              }}
+              className="transition-all p-2 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100"
+            >
+              <BookmarkCheck className="h-5 w-5 fill-current" />
+            </button>
+          ) : (
+            <span className="p-2 rounded-lg text-blue-600 bg-blue-50">
+              <BookmarkCheck className="h-5 w-5 fill-current" />
+            </span>
+          )}
         </div>
       </CardHeader>
 
@@ -161,18 +177,25 @@ const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
             <Button
               size="sm"
               className="rounded-full gap-2 shadow-sm hover:shadow-md transition-shadow"
+              disabled
             >
               You've Applied
             </Button>
           ) : (
-            <Button
-              size="sm"
-              className="rounded-full gap-2 shadow-sm hover:shadow-md transition-shadow"
-              onClick={(e) => e.stopPropagation()}
-            >
-              Apply Now
-              <ExternalLink className="h-3.5 w-3.5" />
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  size="sm"
+                  className="rounded-full gap-2 shadow-sm hover:shadow-md transition-shadow"
+                  disabled={loadingResume || job.isClosed}
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  {job.isClosed ? "Position closed" : loadingResume ? "Checking…" : "Apply Now"}
+                  {!job.isClosed && <ExternalLink className="h-3.5 w-3.5" />}
+                </Button>
+              </DialogTrigger>
+              {!job.isClosed && <Apply job={job} />}
+            </Dialog>
           )}
           <Drawer>
             <DrawerTrigger asChild>
@@ -184,15 +207,18 @@ const MyJobsCard = ({ job, index, matchScore, setSelectedJob }: Ijobs) => {
           </Drawer>
         </div>
 
-        <Button
+        {onRemove && <Button
           size="sm"
           variant="ghost"
           className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded-full gap-1"
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
         >
           <Trash2 className="h-4 w-4" />
           Remove
-        </Button>
+        </Button>}
       </CardFooter>
     </Card>
   );

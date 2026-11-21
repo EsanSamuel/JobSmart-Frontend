@@ -23,6 +23,7 @@ import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import ApplicantDataModal from "./ApplicantDataModal";
 import { useQuery } from "@tanstack/react-query";
 import { useApi } from "@/hooks/useApi";
+import { responseList } from "@/lib/response";
 
 interface Ijobs {
   job: {
@@ -88,10 +89,8 @@ export default function Applicants({ job, jobResumes }: Ijobs) {
   } = useQuery({
     queryKey: ["resumes", job.id],
     queryFn: async () => {
-      if (!job?.id) return null;
       const response = await api.get(`/api/v1/jobs/resume/${job?.id}`);
-      console.log("Applied", response.data.data);
-      return response.data.data.result;
+      return responseList(response);
     },
     enabled: !!job?.id,
   });

@@ -10,8 +10,12 @@ interface IUser {
   user: user;
   jobs: job[];
   bookmarks: bookmark[];
+  loadingBookmarks: boolean;
+  bookmarkError: Error | null;
   appliedJobs: resume;
+  loadingAppliedJobs: boolean;
   matchedJobs: match;
+  loadingMatchedJobs: boolean;
   AIRecommendedJobs: job[];
   loadingJobs: boolean;
   loadingRecommendedJobs: boolean;
@@ -35,6 +39,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       return response.data.data;
     },
     enabled: !!session?.user?.id,
+    retry: false,
   });
 
   const {
@@ -59,8 +64,15 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await api.get(
         `/api/v1/bookmarks/user/${session?.user?.id}`
       );
-      return response.data.data;
+      const payload = response.data.data;
+      if (Array.isArray(payload)) return payload;
+      if (Array.isArray(payload?.bookmarks)) return payload.bookmarks;
+      if (Array.isArray(payload?.result)) return payload.result;
+      if (Array.isArray(payload?.items)) return payload.items;
+      if (Array.isArray(payload?.data)) return payload.data;
+      return [];
     },
+    enabled: !!session?.user?.id,
   });
 
   const {
@@ -75,6 +87,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       );
       return response.data.data;
     },
+    enabled: !!session?.user?.id,
   });
 
   const {
@@ -87,6 +100,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await api.get(`/api/v1/match/user/${session?.user?.id}`);
       return response.data.data;
     },
+    enabled: !!session?.user?.id,
   });
 
   const {
@@ -102,6 +116,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       console.log(response);
       return response.data.data;
     },
+    enabled: !!session?.user?.id,
   });
 
   return (
@@ -111,8 +126,12 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
         jobs,
         loadingJobs,
         bookmarks,
+        loadingBookmarks,
+        bookmarkError,
         appliedJobs,
+        loadingAppliedJobs,
         matchedJobs,
+        loadingMatchedJobs,
         AIRecommendedJobs,
         loadingRecommendedJobs,
       }}

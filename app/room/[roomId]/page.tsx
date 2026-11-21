@@ -4,9 +4,9 @@ import {
   Send,
   Loader2,
   ArrowLeft,
-  MoreVertical,
   Paperclip,
 } from "lucide-react";
+import Link from "next/link";
 import { Message, user } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -244,21 +244,37 @@ export default function ChatRoom() {
 
   if (isPending) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
+      <div className="flex h-full min-h-0 items-center justify-center bg-slate-50">
         <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
       </div>
     );
   }
 
+  if (error || !room) {
+    return (
+      <div className="flex h-full min-h-0 flex-col items-center justify-center gap-3 bg-slate-50 px-6 text-center">
+        <p className="font-medium text-slate-900">This conversation couldn’t be opened.</p>
+        <Link href="/room" className="text-sm font-medium text-blue-700 hover:underline">
+          Back to conversations
+        </Link>
+      </div>
+    );
+  }
+
   return (
-    <div className="relative flex flex-col h-screen bg-gray-50">
-      <div className="shrink-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-sm">
+    <div className="relative flex h-full min-h-0 flex-col overflow-hidden bg-slate-50">
+      <div className="flex shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-4 py-3">
+        <Link
+          href="/room"
+          aria-label="Back to conversations"
+          className="inline-flex items-center gap-1 rounded-lg px-2 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 md:hidden"
+        >
+          <ArrowLeft className="size-4" />
+          <span>Chats</span>
+        </Link>
         <div className="flex items-center gap-3">
-          <button className="lg:hidden p-2 hover:bg-gray-100 rounded-full transition-colors">
-            <ArrowLeft className="w-5 h-5 text-gray-600" />
-          </button>
           {roomName()?.profileImage ? (
-            <Avatar className="object-cover">
+            <Avatar className="size-10 shrink-0">
               <AvatarImage
                 src={roomName()?.profileImage}
                 className="object-cover"
@@ -266,27 +282,24 @@ export default function ChatRoom() {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           ) : (
-            <div className="w-10 h-10 from-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
-              {roomName()?.[0]?.username.toUpperCase() || "U"}
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blue-100 font-semibold text-blue-800">
+              {roomName()?.username?.slice(0, 1).toUpperCase() || "U"}
             </div>
           )}
 
           <div>
-            <h2 className="font-semibold text-gray-900">
+            <h2 className="font-semibold text-slate-900">
               {roomName()?.username || "Loading..."}
             </h2>
-            <p className="text-xs text-green-600">Online</p>
+            <p className="text-xs text-slate-500">Conversation</p>
           </div>
         </div>
-        <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-          <MoreVertical className="w-5 h-5 text-gray-600" />
-        </button>
       </div>
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 pb-24">
         <p className="text-[12px] text-gray text-center text-gray-600">
           {" "}
-          {format(
+          {room.createdAt && format(
             new Date(room.createdAt),
             "'Chat started on' EEEE, MMM d, yyyy"
           )}
@@ -329,7 +342,7 @@ export default function ChatRoom() {
                       onMouseEnter={() => isOwn && setShowDeleteFor(message.id)}
                       onMouseLeave={() => setShowDeleteFor(null)}
                       className={`rounded-2xl ${
-                        message.Files.length > 0 ? "p-2" : "px-4 py-2"
+                        (message.Files?.length ?? 0) > 0 ? "p-2" : "px-4 py-2"
                       }  relative group ${
                         isOwn
                           ? "bg-blue-600 text-white rounded-br-sm"
@@ -337,7 +350,7 @@ export default function ChatRoom() {
                       }`}
                     >
                       <div className="space-y-2">
-                        {message.Files && message.Files.length > 0 && (
+                        {message.Files?.length > 0 && (
                           <div
                             className={`grid gap-2 ${
                               message.Files.length === 1
@@ -483,8 +496,7 @@ export default function ChatRoom() {
 
         <div ref={messagesEndRef} />
       </div>
-      // Replace the bottom input section (starting from line 356) with this:
-      <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 shadow-lg">
+      <div className="absolute inset-x-0 bottom-0 border-t border-slate-200 bg-white px-4 py-3 shadow-[0_-8px_24px_rgba(15,23,42,0.06)]">
         {/* File Previews */}
         {previewFiles.length > 0 && (
           <div className="mb-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-w-full">

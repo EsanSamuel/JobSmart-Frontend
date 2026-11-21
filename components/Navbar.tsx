@@ -1,53 +1,42 @@
 "use client";
 import {
-  Bell,
   Bookmark,
   Sparkles,
-  GalleryVerticalEnd,
   Waypoints,
   Menu,
   Mail,
-  Upload,
 } from "lucide-react";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { UserContext } from "@/app/context/userContext";
-import { useQuery } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
   SheetFooter,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Dialog, DialogTrigger } from "./ui/dialog";
 import UploadProfileImage from "./uploadProfileImage";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
-  const { user, AIRecommendedJobs } = useContext(UserContext) as any;
+  const { user } = useContext(UserContext) as any;
+  const pathname = usePathname();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -63,15 +52,16 @@ const Navbar = () => {
   }, [user]);
 
   return (
-    <nav className="border-b border-gray-300 bg-white px-5 xl:px-[12%] py-4 fixed w-full mb-10 z-10">
-      <div className="flex items-center justify-between">
+    <nav className="sticky top-0 z-10 h-16 w-full border-b border-slate-200 bg-white">
+      <div className="mx-auto flex h-full w-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/">
           <h1 className="md:text-2xl text-[16px] font-bold text-blue-600 flex items-center">
             <Waypoints className="mr-2" /> JobSmart
           </h1>
         </Link>
 
-        <div className="lg:hidden md:hidden sm:hidden">
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline">
@@ -82,101 +72,29 @@ const Navbar = () => {
             <SheetContent>
               <div className="flex flex-col  gap-3 py-10">
                 <Link
-                  href="/ai-recommended-jobs"
-                  className="flex gap-2 items-center"
+                  href="/"
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium ${pathname === "/" ? "bg-blue-50 text-blue-800" : "text-slate-700 hover:bg-slate-100"}`}
                 >
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="relative hover:bg-blue-50"
-                    title="AI Recommended Jobs"
-                  >
-                    <Sparkles className="h-5 w-5 text-blue-600" />
-                    <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center bg-blue-600 text-[10px]">
-                      {AIRecommendedJobs?.length}
-                    </Badge>
-                  </Button>
-                  <p className="text-[12px]">AI Recommendations</p>
+                  <Waypoints className="h-5 w-5" />
+                  Find jobs
+                </Link>
+                <Link
+                  href="/ai-recommended-jobs"
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium ${pathname === "/ai-recommended-jobs" ? "bg-blue-50 text-blue-800" : "text-slate-700 hover:bg-slate-100"}`}
+                >
+                  <Sparkles className="h-5 w-5" />
+                  AI matches
                 </Link>
 
-                <Link href="/saved" className="flex gap-2 items-center">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="relative hover:bg-blue-50"
-                    title="Saved Jobs"
-                  >
-                    <Bookmark className="h-5 w-5 text-gray-600" />
-                  </Button>
-                  <p className="text-[12px]">My Jobs</p>
+                <Link href="/saved" className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium ${pathname === "/saved" ? "bg-blue-50 text-blue-800" : "text-slate-700 hover:bg-slate-100"}`}>
+                  <Bookmark className="h-5 w-5" />
+                  My jobs
                 </Link>
 
-                <Link href="/room" className="flex gap-2 items-center">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="relative hover:bg-blue-50"
-                    title="Inbox"
-                  >
-                    <Mail className="h-5 w-5 text-gray-600" />
-                  </Button>
-                  <p className="text-[12px]">Messages</p>
+                <Link href="/room" className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium ${pathname === "/room" ? "bg-blue-50 text-blue-800" : "text-slate-700 hover:bg-slate-100"}`}>
+                  <Mail className="h-5 w-5" />
+                  Messages
                 </Link>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <div className="flex gap-2 items-center">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="relative hover:bg-blue-50"
-                      >
-                        <Bell className="h-5 w-5 text-gray-600" />
-                        <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center bg-red-600 text-[10px]">
-                          5
-                        </Badge>
-                      </Button>
-                      <p className="text-[12px]">Notifications</p>
-                    </div>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-80">
-                    <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="flex flex-col items-start py-3 cursor-pointer">
-                      <p className="font-medium text-sm">
-                        New job match found!
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Senior Frontend Developer at Google
-                      </p>
-                      <p className="text-xs text-gray-400 mt-1">2 hours ago</p>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="flex flex-col items-start py-3 cursor-pointer">
-                      <p className="font-medium text-sm">
-                        Application status updated
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Your application has been viewed
-                      </p>
-                      <p className="text-xs text-gray-400 mt-1">5 hours ago</p>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="flex flex-col items-start py-3 cursor-pointer">
-                      <p className="font-medium text-sm">
-                        New message from recruiter
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Meta wants to schedule an interview
-                      </p>
-                      <p className="text-xs text-gray-400 mt-1">1 day ago</p>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-center text-blue-600 cursor-pointer">
-                      View all notifications
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
               </div>
               <SheetFooter>
                 {!session?.user ? (
@@ -189,7 +107,7 @@ const Navbar = () => {
                       <DropdownMenuTrigger asChild>
                         <Avatar>
                           <AvatarImage src={user?.profileImage} />
-                          <AvatarFallback>CN</AvatarFallback>
+                          <AvatarFallback>{user?.username?.slice(0, 1) || "U"}</AvatarFallback>
                         </Avatar>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-56" align="start">
@@ -222,131 +140,65 @@ const Navbar = () => {
           </Sheet>
         </div>
 
-        <div className="flex items-center gap-3 sm:flex hidden">
-          <Link href="/ai-recommended-jobs">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative hover:bg-blue-50"
-              title="AI Recommended Jobs"
+        <div className="hidden items-center gap-1 md:flex">
+          {[
+            { href: "/", label: "Find jobs" },
+            { href: "/ai-recommended-jobs", label: "AI matches" },
+            { href: "/saved", label: "My jobs" },
+            { href: "/room", label: "Messages" },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={pathname === item.href ? "page" : undefined}
+              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                pathname === item.href
+                  ? "bg-blue-50 text-blue-800"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"
+              }`}
             >
-              <Sparkles className="h-5 w-5 text-blue-600" />
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center bg-blue-600 text-[10px]">
-                {AIRecommendedJobs?.length}
-              </Badge>
-            </Button>
-          </Link>
+              {item.label}
+            </Link>
+          ))}
+          <ThemeToggle showLabel className="ml-1 text-slate-600 hover:bg-slate-100" />
+        </div>
 
-          <Link href="/saved">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative hover:bg-blue-50"
-              title="Saved Jobs"
-            >
-              <Bookmark className="h-5 w-5 text-gray-600" />
-            </Button>
-          </Link>
-
-          <Link href="/room">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative hover:bg-blue-50"
-              title="Inbox"
-            >
-              <Mail className="h-5 w-5 text-gray-600" />
-            </Button>
-          </Link>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative hover:bg-blue-50"
-              >
-                <Bell className="h-5 w-5 text-gray-600" />
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center bg-red-600 text-[10px]">
-                  5
-                </Badge>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80">
-              <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="flex flex-col items-start py-3 cursor-pointer">
-                <p className="font-medium text-sm">New job match found!</p>
-                <p className="text-xs text-gray-500">
-                  Senior Frontend Developer at Google
-                </p>
-                <p className="text-xs text-gray-400 mt-1">2 hours ago</p>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="flex flex-col items-start py-3 cursor-pointer">
-                <p className="font-medium text-sm">
-                  Application status updated
-                </p>
-                <p className="text-xs text-gray-500">
-                  Your application has been viewed
-                </p>
-                <p className="text-xs text-gray-400 mt-1">5 hours ago</p>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="flex flex-col items-start py-3 cursor-pointer">
-                <p className="font-medium text-sm">
-                  New message from recruiter
-                </p>
-                <p className="text-xs text-gray-500">
-                  Meta wants to schedule an interview
-                </p>
-                <p className="text-xs text-gray-400 mt-1">1 day ago</p>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-center text-blue-600 cursor-pointer">
-                View all notifications
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <div className="h-6 w-px bg-gray-300"></div>
-
-          {/* Auth Buttons */}
-          {!session?.user ? (
-            <a href="/login">
-              <Button variant="ghost">Sign In</Button>
-            </a>
-          ) : (
-            <div className="flex gap-2 items-center">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Avatar>
+        <div className="hidden items-center gap-3 md:flex">
+          {session?.user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-10 gap-2 rounded-full pl-1 pr-3">
+                  <Avatar className="h-8 w-8">
                     <AvatarImage src={user?.profileImage} />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarFallback>{user?.username?.slice(0, 1) || "U"}</AvatarFallback>
                   </Avatar>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="start">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-
-                  <DropdownMenuSeparator />
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <p className="focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
-                        Upload profile image
-                      </p>
-                    </DialogTrigger>
-                    <UploadProfileImage />
-                  </Dialog>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => signOut()}>
-                    Log out
-                    <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                  <span className="max-w-28 truncate text-sm font-medium text-slate-700">
+                    {user?.username || "Account"}
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
+                      Upload profile image
+                    </DropdownMenuItem>
+                  </DialogTrigger>
+                  <UploadProfileImage />
+                </Dialog>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => signOut()}>
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link href="/login">
+              <Button variant="outline" className="rounded-lg">Sign in</Button>
+            </Link>
           )}
-          {/* <Button>Post a Job</Button>*/}
         </div>
       </div>
     </nav>
