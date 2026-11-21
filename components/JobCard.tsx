@@ -74,7 +74,7 @@ const JobCard = ({ job, selectedJob, setSelectedJob }: IJob) => {
   return (
     <Card
       aria-current={selectedJob?.id === job.id ? "true" : undefined}
-      className={`w-full cursor-pointer rounded-xl border bg-white transition-colors duration-150 ${
+      className={`w-full cursor-pointer gap-0 rounded-xl border bg-white py-0 transition-colors duration-150 ${
         selectedJob?.id === job.id
           ? "border-blue-500 ring-1 ring-blue-500/15"
           : "border-slate-200 hover:border-slate-300"

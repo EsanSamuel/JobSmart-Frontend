@@ -60,7 +60,7 @@ const Navbar = () => {
           </h1>
         </Link>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <ThemeToggle />
           <Sheet>
             <SheetTrigger asChild>
@@ -140,7 +140,7 @@ const Navbar = () => {
           </Sheet>
         </div>
 
-        <div className="hidden items-center gap-1 md:flex">
+        <div className="hidden items-center gap-1 lg:flex">
           {[
             { href: "/", label: "Find jobs" },
             { href: "/ai-recommended-jobs", label: "AI matches" },
@@ -163,7 +163,7 @@ const Navbar = () => {
           <ThemeToggle showLabel className="ml-1 text-slate-600 hover:bg-slate-100" />
         </div>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3 lg:flex">
           {session?.user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

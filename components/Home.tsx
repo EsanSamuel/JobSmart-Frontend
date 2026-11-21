@@ -50,7 +50,7 @@ const DiscoveryHeader = ({
     className={`grid shrink-0 transition-[grid-template-rows,opacity] duration-300 ease-out ${visible ? "grid-rows-[1fr] opacity-100" : "pointer-events-none grid-rows-[0fr] opacity-0"}`}
   >
     <div className="min-h-0 overflow-hidden">
-      <header className="sticky top-16 z-20 mx-auto w-full max-w-[1440px] bg-slate-50/95 px-4 pt-6 backdrop-blur-sm sm:px-6 lg:static lg:bg-transparent lg:pt-8 lg:backdrop-blur-none">
+      <header className="sticky top-16 z-20 mx-auto w-full max-w-[1440px] bg-slate-50 px-4 pt-5 sm:px-6 lg:static lg:bg-transparent lg:pt-8 dark:bg-background lg:dark:bg-transparent">
         <div className="mb-5 flex items-start justify-between gap-3 sm:mb-6 sm:items-end">
           <div className="max-w-3xl">
             <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-blue-700 sm:text-xs">
@@ -256,7 +256,7 @@ const Home = () => {
 
   if (loadingJobs) {
     return (
-      <main style={{ overflowAnchor: "none" }} className="min-h-[calc(100dvh-4rem)] bg-slate-50/80 lg:h-[calc(100dvh-4rem)] lg:overflow-hidden">
+      <main style={{ overflowAnchor: "none" }} className="min-h-[calc(100dvh-4rem)] bg-slate-50/80 dark:bg-background lg:h-[calc(100dvh-4rem)] lg:overflow-hidden">
         <DiscoveryHeader
           search={search}
           onSearchChange={setSearch}
@@ -273,7 +273,7 @@ const Home = () => {
 
   if (isError || jobs?.length === 0) {
     return (
-      <main style={{ overflowAnchor: "none" }} className="min-h-[calc(100dvh-4rem)] bg-slate-50/80">
+      <main style={{ overflowAnchor: "none" }} className="min-h-[calc(100dvh-4rem)] bg-slate-50/80 dark:bg-background">
         <DiscoveryHeader
           search={search}
           onSearchChange={setSearch}
@@ -348,7 +348,7 @@ const Home = () => {
         }
       `}</style>
 
-      <main style={{ overflowAnchor: "none" }} className="flex min-h-[calc(100dvh-4rem)] flex-col bg-slate-50/80 lg:h-[calc(100dvh-4rem)] lg:overflow-hidden">
+      <main style={{ overflowAnchor: "none" }} className="flex min-h-[calc(100dvh-4rem)] flex-col bg-slate-50/80 dark:bg-background lg:h-[calc(100dvh-4rem)] lg:overflow-hidden">
         <DiscoveryHeader
           search={search}
           onSearchChange={setSearch}
