@@ -47,11 +47,12 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     error: isError,
     data: jobs,
   } = useQuery({
-    queryKey: ["jobs"],
+    queryKey: ["jobs", session?.user?.id],
     queryFn: async () => {
       const response = await api.get(`/api/v1/jobs`);
       return response.data.data;
     },
+    enabled: !!session?.user?.accessToken,
   });
 
   const {
